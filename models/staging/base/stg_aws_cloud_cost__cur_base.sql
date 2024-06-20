@@ -1,0 +1,12 @@
+{{
+    fivetran_utils.union_data(
+        table_identifier='cur', 
+        database_variable='aws_cloud_cost_database', 
+        schema_variable='aws_cloud_cost_schema', 
+        default_database=target.database,
+        default_schema='aws_cloud_cost',
+        default_variable='cur',
+        union_schema_variable='aws_cloud_cost_union_schemas',
+        union_database_variable='aws_cloud_cost_union_databases'
+    )
+}}
