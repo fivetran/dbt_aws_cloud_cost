@@ -2,7 +2,7 @@
 with base as (
 
     select * 
-    from {{ ref('stg_aws_cloud_cost__cur_base') }}
+    from {{ ref('stg_aws_cloud_cost__report_base') }}
 ),
 
 fields as (
@@ -10,8 +10,8 @@ fields as (
     select
         {{
             fivetran_utils.fill_staging_columns(
-                source_columns=adapter.get_columns_in_relation(ref('stg_aws_cloud_cost__cur_base')),
-                staging_columns=get_cur_columns()
+                source_columns=adapter.get_columns_in_relation(ref('stg_aws_cloud_cost__report_base')),
+                staging_columns=get_aws_cloud_cost_report_columns()
             )
         }}
         {{ fivetran_utils.source_relation(
@@ -160,6 +160,8 @@ final as (
         {# savings_plan_start_time, #}
         savings_plan_total_commitment_to_date,
         savings_plan_used_commitment 
+
+        {{ fivetran_utils.fill_pass_through_columns('aws_cloud_cost_report_pass_through_columns') }}
 
     from fields
 )

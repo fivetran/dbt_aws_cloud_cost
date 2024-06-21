@@ -1,4 +1,4 @@
-{% macro get_cur_columns() %}
+{% macro get_aws_cloud_cost_report_columns() %}
 
 {% set columns = [
     {"name": "_file", "datatype": dbt.type_string()},
@@ -54,7 +54,6 @@
     {"name": "product_product_family", "datatype": dbt.type_string()},
     {"name": "product_region_code", "datatype": dbt.type_string()},
     {"name": "product_servicecode", "datatype": dbt.type_string()},
-    {"name": "product_sku", "datatype": dbt.type_string()},
     {"name": "product_to_location", "datatype": dbt.type_string()},
     {"name": "product_to_location_type", "datatype": dbt.type_string()},
     {"name": "product_to_region_code", "datatype": dbt.type_string()},
@@ -80,6 +79,8 @@
     {"name": "savings_plan_total_commitment_to_date", "datatype": dbt.type_float()},
     {"name": "savings_plan_used_commitment", "datatype": dbt.type_float()}
 ] %}
+
+{{ fivetran_utils.add_pass_through_columns(columns, var('aws_cloud_cost_report_pass_through_columns')) }}
 
 {{ return(columns) }}
 

@@ -1,8 +1,8 @@
 version: 2
 
 models:
-  - name: stg_aws_cloud_cost__cur
-    description: '{{ doc("cur") }}'
+  - name: stg_aws_cloud_cost__report
+    description: '{{ doc("aws_cloud_cost_report") }}'
     columns:
       - name: _file
         description: '{{ doc("_file") }}'

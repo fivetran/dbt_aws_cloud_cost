@@ -5,9 +5,9 @@ sources:
     database: '{% if target.type not in ("spark") %}{{ var("aws_cloud_cost_database", target.database) }}{% endif %}'
     schema: '{{ var("aws_cloud_cost_schema", "aws_cloud_cost") }}'
     tables:
-      - name: cur
-        identifier: '{{ var("aws_cloud_cost_cur_identifier", "cur") }}'
-        description: '{{ doc("cur") }}'
+      - name: report
+        identifier: '{{ var("aws_cloud_cost_report_identifier", "aws_cost_report") }}'
+        description: '{{ doc("aws_cloud_cost_report") }}'
         columns:
           - name: _file
             description: '{{ doc("_file") }}'

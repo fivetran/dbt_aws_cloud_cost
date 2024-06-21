@@ -1,4 +1,4 @@
-{% docs cur %}
+{% docs aws_cloud_cost_report %}
 
 [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS. Majority of columns are prepended with and reflect information from the following categories (others are either system-generated or JSON fields):
 
