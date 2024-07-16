@@ -58,10 +58,10 @@ models:
       - name: line_item_legal_entity
         description: '{{ doc("line_item_legal_entity") }}'
 
-      - name: line_item_line_item_description
+      - name: line_item_description
         description: '{{ doc("line_item_line_item_description") }}'
 
-      - name: line_item_line_item_type
+      - name: line_item_type
         description: '{{ doc("line_item_line_item_type") }}'
 
       - name: line_item_normalization_factor
@@ -166,8 +166,11 @@ models:
       - name: product_pricing_unit
         description: '{{ doc("product_pricing_unit") }}'
 
-      - name: product_product_family
+      - name: product_family
         description: '{{ doc("product_product_family") }}'
+
+      - name: product_name
+        description: '{{ doc("product_product_name") }}'
 
       - name: product_region_code
         description: '{{ doc("product_region_code") }}'

@@ -119,6 +119,8 @@ sources:
             description: '{{ doc("product_pricing_unit") }}'
           - name: product_product_family
             description: '{{ doc("product_product_family") }}'
+          - name: product_product_name
+            description: '{{ doc("product_product_name") }}'
           - name: product_region_code
             description: '{{ doc("product_region_code") }}'
           - name: product_servicecode

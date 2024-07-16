@@ -51,6 +51,7 @@
     {"name": "product_location", "datatype": dbt.type_string()},
     {"name": "product_location_type", "datatype": dbt.type_string()},
     {"name": "product_operation", "datatype": dbt.type_string()},
+    {"name": "product_product_name", "datatype": dbt.type_string()},
     {"name": "product_product_family", "datatype": dbt.type_string()},
     {"name": "product_region_code", "datatype": dbt.type_string()},
     {"name": "product_servicecode", "datatype": dbt.type_string()},

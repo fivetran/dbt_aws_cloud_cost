@@ -294,6 +294,10 @@ The smallest billing unit for an AWS service. For example, 0.01c per API call.
 The category for the type of product.
 {% enddocs %}
 
+{% docs product_product_name %}
+The longform name of the product.
+{% enddocs %}
+
 {% docs product_region_code %}
 A Region is a physical location around the world where data centers are clustered. AWS calls each group of logical data centers an Availability Zone (AZ). Each AWS Region consists of multiple, isolated, and physically separate AZs within a geographical area. The Region code attribute has the same name as an AWS Region, and specifies where the AWS service is available.
 {% enddocs %}

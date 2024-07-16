@@ -29,7 +29,6 @@ final as (
         coalesce(
             {{ dbt.split_part(string_text='_file', delimiter_text="'/data'", part_number=1) }},
             REGEXP_EXTRACT(_file, r'/([^/]+)/')) as report,
-        {# _fivetran_synced, #}
         _line,
         _modified,
         row_number() over (partition by bill_billing_period_start_date, _line, source_relation order by _modified desc) = 1 as is_latest_file_version,
@@ -43,21 +42,21 @@ final as (
         bill_payer_account_id,
         bill_payer_account_name,
 
-        identity_line_item_id, -- supposed to be PK within a report
+        {# identity_line_item_id, -- supposed to be PK within a report
         identity_time_interval, -- doesn't actually line up with line_item_usage_start_date and line_item_usage_end_date
         {{ dbt.split_part(string_text='identity_time_interval', delimiter_text="'/'", part_number=1) }} as identity_time_interval_start,
-        {{ dbt.split_part(string_text='identity_time_interval', delimiter_text="'/'", part_number=2) }} as identity_time_interval_end,
-        
-        line_item_availability_zone,
+        {{ dbt.split_part(string_text='identity_time_interval', delimiter_text="'/'", part_number=2) }} as identity_time_interval_end, #}
+
         line_item_blended_cost,
         line_item_blended_rate,
         line_item_currency_code,
         line_item_normalization_factor,
         line_item_normalized_usage_amount,
 
-        line_item_line_item_description,
-        line_item_line_item_type,
-        line_item_operation,
+        line_item_availability_zone,
+        line_item_line_item_description as line_item_description,
+        line_item_line_item_type as line_item_type,
+        coalesce(line_item_operation, product_operation) as line_item_operation,
         line_item_product_code,
         line_item_resource_id, -- null unless you've enabled `INCLUDE RESOURCES` in your AWS CUR configuration
         line_item_tax_type,
@@ -68,22 +67,23 @@ final as (
         line_item_usage_amount,
         line_item_usage_end_date,
         line_item_usage_start_date,
+
         line_item_usage_type,
 
         pricing_currency,
-        pricing_public_on_demand_cost, -- sum 
-        pricing_public_on_demand_rate, -- average
+        pricing_public_on_demand_cost,
+        pricing_public_on_demand_rate,
         pricing_purchase_option,
         pricing_term,
         pricing_unit,
 
-        product_fee_code, -- similar to line_item_description
-        product_fee_description,
+        product_fee_code, 
+        product_fee_description, -- similar to line_item_description
 
         -- info about product
-        product_operation,
-        product_product_family,
-        product_servicecode as product_service_code,
+        product_product_name as product_name,
+        product_product_family as product_family,
+        {# product_servicecode as product_service_code, #}
 
         -- for s3 buckets
         product_location,
