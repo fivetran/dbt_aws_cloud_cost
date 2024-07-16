@@ -4,36 +4,88 @@ with source_report as (
     from {{ ref('stg_aws_cloud_cost__report') }}
 ),
 
-final as (
+{# Sometimes records are sent with just IDs and null names. The following 2 CTEs will map account names
+to their IDs so we can fill these in when needed. #}
+usage_account_mapping as (
+
+    select 
+        line_item_usage_account_id,
+        line_item_usage_account_name,
+        max(line_item_usage_start_date) as latest_start_date
+
+    from source_report
+    where line_item_usage_account_name is not null
+    group by 1,2
+),
+
+usage_account_names as (
+
+    select
+        line_item_usage_account_id,
+        line_item_usage_account_name
+    from (
+        {# In case the account name as been updated, let's ensure we're only grabbing the most recent one #}
+        select 
+            line_item_usage_account_id,
+            line_item_usage_account_name,
+            row_number() over (partition by line_item_usage_account_id order by latest_start_date desc) = 1 as is_latest_name
+        from usage_account_mapping
+    ) where is_latest_name
+),
+
+{# Sometimes records are sent with just IDs and null names. The following 2 CTEs will map account names
+to their IDs so we can fill these in when needed. #}
+billing_account_mapping as (
+
+    select 
+        bill_payer_account_id,
+        bill_payer_account_name,
+        max(billing_period_start_date) as latest_start_date
+
+    from source_report
+    where bill_payer_account_name is not null
+    group by 1,2
+),
+
+billing_account_names as (
+
+    select
+        bill_payer_account_id,
+        bill_payer_account_name
+    from (
+        {# In case the account name as been updated, let's ensure we're only grabbing the most recent one #}
+        select 
+            bill_payer_account_id,
+            bill_payer_account_name,
+            row_number() over (partition by bill_payer_account_id order by latest_start_date desc) = 1 as is_latest_name
+        from billing_account_mapping
+    ) where is_latest_name
+),
+
+fields as (
 
     select 
         source_relation,
         report, 
 
         {# Period Details #}
-        {{ dbt.date_trunc('day', 'line_item_usage_start_date') }} as date_day,
-        bill_billing_period_start_date,
-        bill_billing_period_end_date,
+        {{ dbt.date_trunc('day', 'line_item_usage_start_date') }} as usage_day,
+        billing_period_start_date,
+        billing_period_end_date,
 
         {# Account Details #}
-        line_item_usage_account_id,
-        line_item_usage_account_name,
-        bill_payer_account_id,
-        bill_payer_account_name,
+        source_report.line_item_usage_account_id,
+        coalesce(source_report.line_item_usage_account_name, usage_account_names.line_item_usage_account_name) as line_item_usage_account_name,
+        source_report.bill_payer_account_id,
+        coalesce(source_report.bill_payer_account_name, billing_account_names.bill_payer_account_name) as bill_payer_account_name,
 
         {# Billing Details #}
         bill_invoice_id,
         bill_invoicing_entity,
-        bill_billing_entity,
-        bill_bill_type, 
+        billing_entity,
+        bill_type, 
         line_item_type,
         line_item_tax_type,
-
-        {# Units #}
-        line_item_currency_code,
-        pricing_currency,
-        pricing_unit,
-        line_item_usage_type, -- usage_unit basically
 
         {# Pricing Details #}
         pricing_purchase_option,
@@ -41,9 +93,15 @@ final as (
         product_fee_code,
         product_fee_description,
 
+        {# Units #}
+        pricing_unit,
+        line_item_usage_type,
+        line_item_currency_code,
+        pricing_currency,
+        
         {# Line Item Service Details #}
         line_item_description,
-        line_item_resource_id, -- if available
+        line_item_resource_id, -- null unless you've enabled `INCLUDE RESOURCES` in your AWS CUR configuration
         line_item_product_code,
         product_name,
         product_family,
@@ -101,14 +159,68 @@ final as (
         {# Cost & Usage Metrics - Savings Plans #}
         max(savings_plan_amortized_upfront_commitment_for_billing_period) as savings_plan_amortized_upfront_commitment_for_billing_period,
         max(savings_plan_recurring_commitment_for_billing_period) as savings_plan_recurring_commitment_for_billing_period,
-        max(savings_plan_savings_plan_effective_cost) as savings_plan_savings_plan_effective_cost,
-        max(savings_plan_savings_plan_rate) as savings_plan_savings_plan_rate,
+        max(savings_plan_effective_cost) as savings_plan_effective_cost,
+        max(savings_plan_rate) as savings_plan_rate,
         max(savings_plan_total_commitment_to_date) as savings_plan_total_commitment_to_date,
         max(savings_plan_used_commitment) as savings_plan_used_commitment 
 
     from source_report
+    left join billing_account_names
+        on source_report.bill_payer_account_id = billing_account_names.bill_payer_account_id
+    left join usage_account_names
+        on source_report.line_item_usage_account_id = usage_account_names.line_item_usage_account_id
 
     {{ dbt_utils.group_by(n=41+var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
+),
+
+final as (
+
+    select 
+        *, 
+        {{ dbt_utils.generate_surrogate_key([
+            'source_relation',
+            'report', 
+            'usage_day',
+            'billing_period_start_date',
+            'billing_period_end_date',
+            'line_item_usage_account_id',
+            'line_item_usage_account_name',
+            'bill_payer_account_id',
+            'bill_payer_account_name',
+            'bill_invoice_id',
+            'bill_invoicing_entity',
+            'billing_entity',
+            'bill_type', 
+            'line_item_type',
+            'line_item_tax_type',
+            'pricing_purchase_option',
+            'pricing_term',
+            'product_fee_code',
+            'product_fee_description',
+            'pricing_unit',
+            'line_item_usage_type',
+            'line_item_currency_code',
+            'pricing_currency',
+            'line_item_description',
+            'line_item_resource_id',
+            'line_item_product_code',
+            'product_name',
+            'product_family',
+            'line_item_operation',
+            'product_location',
+            'product_location_type',
+            'product_region_code',
+            'line_item_availability_zone',
+            'product_from_location',
+            'product_from_location_type',
+            'product_from_region_code',
+            'product_to_location',
+            'product_to_location_type',
+            'product_to_region_code',
+            'product_instance_family',
+            'product_instance_type'
+        ]) }} as unique_key
+    from fields
 )
 
 select *

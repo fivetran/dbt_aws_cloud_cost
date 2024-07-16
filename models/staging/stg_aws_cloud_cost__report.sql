@@ -33,10 +33,10 @@ final as (
         _modified,
         row_number() over (partition by bill_billing_period_start_date, _line, source_relation order by _modified desc) = 1 as is_latest_file_version,
         
-        bill_bill_type, 
-        bill_billing_entity,
-        bill_billing_period_start_date,
-        bill_billing_period_end_date,
+        bill_bill_type as bill_type,
+        bill_billing_entity as billing_entity,
+        bill_billing_period_start_date as billing_period_start_date,
+        bill_billing_period_end_date as billing_period_end_date,
         bill_invoice_id,
         bill_invoicing_entity,
         bill_payer_account_id,
@@ -52,7 +52,6 @@ final as (
         line_item_currency_code,
         line_item_normalization_factor,
         line_item_normalized_usage_amount,
-
         line_item_availability_zone,
         line_item_line_item_description as line_item_description,
         line_item_line_item_type as line_item_type,
@@ -67,18 +66,15 @@ final as (
         line_item_usage_amount,
         line_item_usage_end_date,
         line_item_usage_start_date,
-
         line_item_usage_type,
-
         pricing_currency,
         pricing_public_on_demand_cost,
         pricing_public_on_demand_rate,
         pricing_purchase_option,
         pricing_term,
         pricing_unit,
-
         product_fee_code, 
-        product_fee_description, -- similar to line_item_description
+        product_fee_description,
 
         -- info about product
         product_product_name as product_name,
@@ -119,8 +115,8 @@ final as (
         reservation_upfront_value,
         savings_plan_amortized_upfront_commitment_for_billing_period,
         savings_plan_recurring_commitment_for_billing_period,
-        savings_plan_savings_plan_effective_cost,
-        savings_plan_savings_plan_rate,
+        savings_plan_savings_plan_effective_cost as savings_plan_effective_cost,
+        savings_plan_savings_plan_rate as savings_plan_rate,
         savings_plan_total_commitment_to_date,
         savings_plan_used_commitment 
 
