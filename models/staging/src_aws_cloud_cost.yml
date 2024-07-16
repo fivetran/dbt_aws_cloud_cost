@@ -5,9 +5,9 @@ sources:
     database: '{% if target.type not in ("spark") %}{{ var("aws_cloud_cost_database", target.database) }}{% endif %}'
     schema: '{{ var("aws_cloud_cost_schema", "aws_cloud_cost") }}'
     tables:
-      - name: cur
-        identifier: '{{ var("aws_cloud_cost_cur_identifier", "cur") }}'
-        description: '{{ doc("cur") }}'
+      - name: report
+        identifier: '{{ var("aws_cloud_cost_report_identifier", "aws_cost_report") }}'
+        description: '{{ doc("aws_cloud_cost_report") }}'
         columns:
           - name: _file
             description: '{{ doc("_file") }}'
@@ -119,6 +119,8 @@ sources:
             description: '{{ doc("product_pricing_unit") }}'
           - name: product_product_family
             description: '{{ doc("product_product_family") }}'
+          - name: product_product_name
+            description: '{{ doc("product_product_name") }}'
           - name: product_region_code
             description: '{{ doc("product_region_code") }}'
           - name: product_servicecode

@@ -18,7 +18,7 @@ This package models AWS Cloud Cost data from [Fivetran's connector](https://five
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
 <!--section="aws_cloud_cost_model"-->
-  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost_source/models/?g_v=1) which leverage data in the format described by [this ERD](https://fivetran.com/docs/applications/aws_cloud_cost/#schemainformation). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws_cloud_cost_source) for analysis by doing the following:
+  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost_source/models/?g_v=1) which leverage data in the format described by [this ERD](https://fivetran.com/docs/applications/aws-cost-report/#schemainformation). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws-cost-report) for analysis by doing the following:
   - Name columns for consistency across all packages and for easier analysis
       - Primary keys are renamed from `id` to `<table name>_id`. 
       - Foreign key names explicitly map onto their related tables (ie `owner_id` -> `owner_user_id`).
@@ -92,32 +92,32 @@ To connect your multiple schema/database sources to the package models, follow t
 
 
 ## Step 4: Define Cost & Usage Report source table
-By default, this package assumes your AWS Cost & Usage Report lives in a source table called `cur`. In the highly likely case that this is not what your table is called, configure the following variable in your `dbt_project.yml`.
+By default, this package assumes your AWS Cost & Usage Report lives in a source table called `aws_cloud_cost_report`. In the very likely case that this is not what your table is called, configure the following variable in your `dbt_project.yml`.
 
 ```yml
 # dbt_project.yml
 
 vars:
-    aws_cloud_cost_<default_source_table_name>_identifier: your_table_name 
+    aws_cloud_cost_report_identifier: your_table_name 
 ```
 
 > Note: If you are unioning multiple connectors, they must have the **same table name**. If this is not the case, we recommend configuring one AWS Data Export to include all of your sources and pipe the report data to a single Fivetran connector.
 
 ## (Optional) Step 5: Additional configurations
 ### Passing Through Additional Fields
-This package includes all source columns defined in the macros folder. You can add more columns using the `aws_cloud_cost__cur_pass_through_columns` variable. This variables allow for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring extra fields to include:
+This package includes all source columns defined in the macros folder. You can add more columns using the `aws_cloud_cost_report_pass_through_columns` variable. This variables allow for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring extra fields to include:
 
 ```yml
 # dbt_project.yml
 
 vars:
-  aws_cloud_cost__cur_pass_through_columns:
+  aws_cloud_cost_report_pass_through_columns:
     - name: "that_field"
       alias: "renamed_to_this_field"
       transform_sql: "cast(renamed_to_this_field as string)"
-  aws_cloud_cost__cur_pass_through_columns:
+  aws_cloud_cost_report_pass_through_columns:
     - name: "this_field"
-  aws_cloud_cost__cur_pass_through_columns:
+  aws_cloud_cost_report_pass_through_columns:
     - name: "old_name"
       alias: "new_name"
 ```
@@ -159,6 +159,7 @@ packages:
     - package: dbt-labs/dbt_utils
       version: [">=1.0.0", "<2.0.0"]
 ```
+
 # 🙌 How is this package maintained and can I contribute?
 ## Package Maintenance
 The Fivetran team maintaining this package _only_ maintains the latest version of the package. We highly recommend you stay consistent with the [latest version](https://hub.getdbt.com/fivetran/aws_cloud_cost/latest/) of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.

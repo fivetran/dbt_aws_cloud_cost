@@ -1,4 +1,4 @@
-name: 'aws_cloud_cost_source_integration_tests'
+name: 'aws_cloud_cost_integration_tests'
 version: '0.1.0'
 config-version: 2
 
@@ -9,5 +9,5 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 
 vars:
-  aws_cloud_cost_source:
-    cost_report_identifier: "cost_report"
+  aws_cloud_cost:
+    aws_cloud_cost_schema: aws_cloud_cost_integration_tests_3

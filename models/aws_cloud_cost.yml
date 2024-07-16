@@ -1,21 +1,14 @@
 version: 2
 
 models:
-  - name: stg_aws_cloud_cost__report
+  - name: aws_cloud_cost__daily_overview
     description: '{{ doc("aws_cloud_cost_report") }}'
     columns:
-      - name: _file
-        description: '{{ doc("_file") }}'
-
-      - name: _line
-        description: '{{ doc("_line") }}'
-
-      - name: _fivetran_synced
-        description: '{{ doc("_fivetran_synced") }}'
-
-      - name: _modified
-        description: '{{ doc("_modified") }}'
-
+      - name: unique_key
+        description: Surrogate key hashed on all dimensions in this model.
+        tests:
+          - unique
+          - not_null
       - name: bill_type
         description: '{{ doc("bill_bill_type") }}'
 
@@ -306,4 +299,3 @@ models:
 
       - name: savings_plan_total_commitment_to_date
         description: '{{ doc("savings_plan_total_commitment_to_date") }}'
-

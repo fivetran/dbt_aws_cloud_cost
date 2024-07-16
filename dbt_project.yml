@@ -15,4 +15,5 @@ models:
 
 
 vars:
-  cur: "{{ source('aws_cloud_cost', 'cur') }}"
+  aws_cloud_cost_report: "{{ source('aws_cloud_cost', 'report') }}"
+  aws_cloud_cost_report_pass_through_columns: []
