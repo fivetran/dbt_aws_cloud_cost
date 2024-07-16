@@ -10,6 +10,8 @@
         <img src="https://img.shields.io/badge/Contributions-welcome-blueviolet" /></a>
 </p>
 
+# 🚧 WIP 🚧
+
 # AWS Cloud Cost dbt Package ([Docs](https://fivetran.github.io/dbt_aws_cloud_cost/))
 
 # 📣 What does this dbt package do?
