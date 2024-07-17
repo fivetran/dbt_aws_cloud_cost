@@ -4,17 +4,23 @@ models:
   - name: stg_aws_cloud_cost__report
     description: '{{ doc("aws_cloud_cost_report") }}'
     columns:
+      - name: source_relation
+        description: "{{ doc('source_relation') }}"
+
       - name: _file
         description: '{{ doc("_file") }}'
+
+      - name: report
+        description: "{{ doc('report') }}"
 
       - name: _line
         description: '{{ doc("_line") }}'
 
-      - name: _fivetran_synced
-        description: '{{ doc("_fivetran_synced") }}'
-
       - name: _modified
         description: '{{ doc("_modified") }}'
+
+      - name: max_modified_for_billing_period
+        description: '{{ doc("max_modified_for_billing_period") }}'
 
       - name: bill_type
         description: '{{ doc("bill_bill_type") }}'
@@ -37,12 +43,6 @@ models:
       - name: bill_payer_account_id
         description: '{{ doc("bill_payer_account_id") }}'
 
-      - name: identity_line_item_id
-        description: '{{ doc("identity_line_item_id") }}'
-
-      - name: identity_time_interval
-        description: '{{ doc("identity_time_interval") }}'
-
       - name: line_item_availability_zone
         description: '{{ doc("line_item_availability_zone") }}'
 
@@ -54,9 +54,6 @@ models:
 
       - name: line_item_currency_code
         description: '{{ doc("line_item_currency_code") }}'
-
-      - name: line_item_legal_entity
-        description: '{{ doc("line_item_legal_entity") }}'
 
       - name: line_item_description
         description: '{{ doc("line_item_line_item_description") }}'
@@ -70,7 +67,7 @@ models:
       - name: line_item_normalized_usage_amount
         description: '{{ doc("line_item_normalized_usage_amount") }}'
 
-      - name: line_item_operation
+      - name: operation
         description: '{{ doc("line_item_operation") }}'
 
       - name: line_item_product_code
@@ -106,12 +103,6 @@ models:
       - name: pricing_currency
         description: '{{ doc("pricing_currency") }}'
 
-      - name: pricing_lease_contract_length
-        description: '{{ doc("pricing_lease_contract_length") }}'
-
-      - name: pricing_offering_class
-        description: '{{ doc("pricing_offering_class") }}'
-
       - name: pricing_public_on_demand_cost
         description: '{{ doc("pricing_public_on_demand_cost") }}'
 
@@ -120,12 +111,6 @@ models:
 
       - name: pricing_purchase_option
         description: '{{ doc("pricing_purchase_option") }}'
-
-      - name: pricing_rate_code
-        description: '{{ doc("pricing_rate_code") }}'
-
-      - name: pricing_rate_id
-        description: '{{ doc("pricing_rate_id") }}'
 
       - name: pricing_term
         description: '{{ doc("pricing_term") }}'
@@ -160,12 +145,6 @@ models:
       - name: product_location_type
         description: '{{ doc("product_location_type") }}'
 
-      - name: product_operation
-        description: '{{ doc("product_operation") }}'
-
-      - name: product_pricing_unit
-        description: '{{ doc("product_pricing_unit") }}'
-
       - name: product_family
         description: '{{ doc("product_product_family") }}'
 
@@ -175,11 +154,8 @@ models:
       - name: product_region_code
         description: '{{ doc("product_region_code") }}'
 
-      - name: product_servicecode
+      - name: product_service_code
         description: '{{ doc("product_servicecode") }}'
-
-      - name: product_sku
-        description: '{{ doc("product_sku") }}'
 
       - name: product_to_location
         description: '{{ doc("product_to_location") }}'
@@ -190,32 +166,14 @@ models:
       - name: product_to_region_code
         description: '{{ doc("product_to_region_code") }}'
 
-      - name: product_usagetype
-        description: '{{ doc("product_usagetype") }}'
-
       - name: reservation_amortized_upfront_fee_for_billing_period
         description: '{{ doc("reservation_amortized_upfront_fee_for_billing_period") }}'
-
-      - name: reservation_end_time
-        description: '{{ doc("reservation_end_time") }}'
-
-      - name: reservation_modification_status
-        description: '{{ doc("reservation_modification_status") }}'
 
       - name: reservation_normalized_units_per_reservation
         description: '{{ doc("reservation_normalized_units_per_reservation") }}'
 
       - name: reservation_number_of_reservations
         description: '{{ doc("reservation_number_of_reservations") }}'
-
-      - name: reservation_reservation_arn
-        description: '{{ doc("reservation_reservation_arn") }}'
-
-      - name: reservation_start_time
-        description: '{{ doc("reservation_start_time") }}'
-
-      - name: reservation_subscription_id
-        description: '{{ doc("reservation_subscription_id") }}'
 
       - name: reservation_total_reserved_normalized_units
         description: '{{ doc("reservation_total_reserved_normalized_units") }}'
@@ -241,50 +199,17 @@ models:
       - name: reservation_upfront_value
         description: '{{ doc("reservation_upfront_value") }}'
 
-      - name: savings_plan_end_time
-        description: '{{ doc("savings_plan_end_time") }}'
-
-      - name: savings_plan_offering_type
-        description: '{{ doc("savings_plan_offering_type") }}'
-
-      - name: savings_plan_payment_option
-        description: '{{ doc("savings_plan_payment_option") }}'
-
-      - name: savings_plan_purchase_term
-        description: '{{ doc("savings_plan_purchase_term") }}'
-
-      - name: savings_plan_region
-        description: '{{ doc("savings_plan_region") }}'
-
       - name: savings_plan_effective_cost
         description: '{{ doc("savings_plan_savings_plan_effective_cost") }}'
 
       - name: savings_plan_rate
         description: '{{ doc("savings_plan_savings_plan_rate") }}'
 
-      - name: savings_plan_start_time
-        description: '{{ doc("savings_plan_start_time") }}'
-
       - name: bill_payer_account_name
         description: '{{ doc("bill_payer_account_name") }}'
 
-      - name: product
-        description: '{{ doc("product") }}'
-
-      - name: discount
-        description: '{{ doc("discount") }}'
-
-      - name: resource_tags
-        description: '{{ doc("resource_tags") }}'
-
-      - name: cost_category
-        description: '{{ doc("cost_category") }}'
-
       - name: line_item_usage_account_name
         description: '{{ doc("line_item_usage_account_name") }}'
-
-      - name: reservation_reservation_a_r_n
-        description: '{{ doc("reservation_reservation_a_r_n") }}'
 
       - name: reservation_recurring_fee_for_usage
         description: '{{ doc("reservation_recurring_fee_for_usage") }}'

@@ -11,24 +11,27 @@ usage_account_mapping as (
     select 
         line_item_usage_account_id,
         line_item_usage_account_name,
+        source_relation,
         max(line_item_usage_start_date) as latest_start_date
 
     from source_report
     where line_item_usage_account_name is not null
-    group by 1,2
+    group by 1,2,3
 ),
 
 usage_account_names as (
 
     select
         line_item_usage_account_id,
-        line_item_usage_account_name
+        line_item_usage_account_name,
+        source_relation
     from (
         {# In case the account name as been updated, let's ensure we're only grabbing the most recent one #}
         select 
             line_item_usage_account_id,
             line_item_usage_account_name,
-            row_number() over (partition by line_item_usage_account_id order by latest_start_date desc) = 1 as is_latest_name
+            source_relation,
+            row_number() over (partition by line_item_usage_account_id, source_relation order by latest_start_date desc) = 1 as is_latest_name
         from usage_account_mapping
     ) where is_latest_name
 ),
@@ -40,24 +43,27 @@ billing_account_mapping as (
     select 
         bill_payer_account_id,
         bill_payer_account_name,
+        source_relation,
         max(billing_period_start_date) as latest_start_date
 
     from source_report
     where bill_payer_account_name is not null
-    group by 1,2
+    group by 1,2,3
 ),
 
 billing_account_names as (
 
     select
         bill_payer_account_id,
-        bill_payer_account_name
+        bill_payer_account_name,
+        source_relation
     from (
         {# In case the account name as been updated, let's ensure we're only grabbing the most recent one #}
         select 
             bill_payer_account_id,
             bill_payer_account_name,
-            row_number() over (partition by bill_payer_account_id order by latest_start_date desc) = 1 as is_latest_name
+            source_relation,
+            row_number() over (partition by bill_payer_account_id, source_relation order by latest_start_date desc) = 1 as is_latest_name
         from billing_account_mapping
     ) where is_latest_name
 ),
@@ -65,11 +71,12 @@ billing_account_names as (
 fields as (
 
     select 
-        source_relation,
+        source_report.source_relation,
         report, 
 
         {# Period Details #}
-        {{ dbt.date_trunc('day', 'line_item_usage_start_date') }} as usage_day,
+        line_item_usage_start_date,
+        line_item_usage_end_date,
         billing_period_start_date,
         billing_period_end_date,
 
@@ -103,9 +110,10 @@ fields as (
         line_item_description,
         line_item_resource_id, -- null unless you've enabled `INCLUDE RESOURCES` in your AWS CUR configuration
         line_item_product_code,
+        product_service_code,
         product_name,
         product_family,
-        line_item_operation,
+        operation,
 
         {# Product Details - s3 #}
         product_location,
@@ -167,10 +175,12 @@ fields as (
     from source_report
     left join billing_account_names
         on source_report.bill_payer_account_id = billing_account_names.bill_payer_account_id
+        and source_report.source_relation = billing_account_names.source_relation
     left join usage_account_names
         on source_report.line_item_usage_account_id = usage_account_names.line_item_usage_account_id
+        and source_report.source_relation = usage_account_names.source_relation
 
-    {{ dbt_utils.group_by(n=41+var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
+    {{ dbt_utils.group_by(n=43 + var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
 ),
 
 final as (
@@ -180,7 +190,8 @@ final as (
         {{ dbt_utils.generate_surrogate_key([
             'source_relation',
             'report', 
-            'usage_day',
+            'line_item_usage_start_date',
+            'line_item_usage_end_date',
             'billing_period_start_date',
             'billing_period_end_date',
             'line_item_usage_account_id',
@@ -204,9 +215,10 @@ final as (
             'line_item_description',
             'line_item_resource_id',
             'line_item_product_code',
+            'product_service_code',
             'product_name',
             'product_family',
-            'line_item_operation',
+            'operation',
             'product_location',
             'product_location_type',
             'product_region_code',

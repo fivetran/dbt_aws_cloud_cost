@@ -16,13 +16,21 @@
 Title of the report file from AWS. If you have selected the "create" report delivery, in which each data export produces a new, timestamped version of each report, the `_file` will include this version timestamp. Otherwise, there will be one version of the file that is repeatedly overwritten/appended to by Amazon.
 {% enddocs %}
 
+{% docs report %}
+The bucket/report combo this belongs to. Parsed out of `_file`.
+{% enddocs %}
+
 {% docs _fivetran_synced %}
 The time at which fivetran last synced this record.
 {% enddocs %}
 
+{% docs source_relation %} The source of the record if the unioning functionality is being used. If not this field will be empty. {% enddocs %}
+
 {% docs _line %} Line number of the report file this record was read from. {% enddocs %}
 
 {% docs _modified %} Timestamp of when the file was read from AWS. {% enddocs %}
+
+{% docs max_modified_for_billing_period %} For each billing period, the most recent `_modified` date. Used to find the latest version of the report file. {% enddocs %}
 
 {% docs bill_bill_type %}
 The type of bill that this report covers. There are three bill types:

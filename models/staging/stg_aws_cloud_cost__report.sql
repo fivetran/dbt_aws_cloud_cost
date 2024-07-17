@@ -26,13 +26,10 @@ final as (
     select 
         source_relation, 
         _file,
-        coalesce(
-            {{ dbt.split_part(string_text='_file', delimiter_text="'/data'", part_number=1) }},
-            REGEXP_EXTRACT(_file, r'/([^/]+)/')) as report,
+        REGEXP_EXTRACT(_file, r'^([^\/]+\/[^\/]+)') as report, -- will likely need macro here for cross-DB compatibility
         _line,
         _modified,
-        row_number() over (partition by bill_billing_period_start_date, _line, source_relation order by _modified desc) = 1 as is_latest_file_version,
-        
+        max(_modified) over(partition by bill_billing_period_start_date, source_relation) as max_modified_for_billing_period,
         bill_bill_type as bill_type,
         bill_billing_entity as billing_entity,
         bill_billing_period_start_date as billing_period_start_date,
@@ -41,12 +38,6 @@ final as (
         bill_invoicing_entity,
         bill_payer_account_id,
         bill_payer_account_name,
-
-        {# identity_line_item_id, -- supposed to be PK within a report
-        identity_time_interval, -- doesn't actually line up with line_item_usage_start_date and line_item_usage_end_date
-        {{ dbt.split_part(string_text='identity_time_interval', delimiter_text="'/'", part_number=1) }} as identity_time_interval_start,
-        {{ dbt.split_part(string_text='identity_time_interval', delimiter_text="'/'", part_number=2) }} as identity_time_interval_end, #}
-
         line_item_blended_cost,
         line_item_blended_rate,
         line_item_currency_code,
@@ -55,7 +46,7 @@ final as (
         line_item_availability_zone,
         line_item_line_item_description as line_item_description,
         line_item_line_item_type as line_item_type,
-        coalesce(line_item_operation, product_operation) as line_item_operation,
+        coalesce(line_item_operation, product_operation) as operation,
         line_item_product_code,
         line_item_resource_id, -- null unless you've enabled `INCLUDE RESOURCES` in your AWS CUR configuration
         line_item_tax_type,
@@ -79,7 +70,7 @@ final as (
         -- info about product
         product_product_name as product_name,
         product_product_family as product_family,
-        {# product_servicecode as product_service_code, #}
+        product_servicecode as product_service_code,
 
         -- for s3 buckets
         product_location,
@@ -127,4 +118,4 @@ final as (
 
 select *
 from final
-where is_latest_file_version
+where _modified = max_modified_for_billing_period
