@@ -11,3 +11,6 @@ dispatch:
 vars:
   aws_cloud_cost:
     aws_cloud_cost_schema: aws_cloud_cost_integration_tests_3
+
+models:
+  +schema: "aws_cloud_cost_{{ var('directed_schema','dev') }}"

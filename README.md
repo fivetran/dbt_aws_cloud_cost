@@ -16,11 +16,10 @@
 
 # 📣 What does this dbt package do?
 
-This package models AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by [this ERD](https://fivetran.com/docs/applications/aws_cloud_cost#schemainformation).
+This package models AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report). 
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
-<!--section="aws_cloud_cost_model"-->
-  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost_source/models/?g_v=1) which leverage data in the format described by [this ERD](https://fivetran.com/docs/applications/aws-cost-report/#schemainformation). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws-cost-report) for analysis by doing the following:
+  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost_source/models/?g_v=1) which leverage data in the format described by . These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
   - Name columns for consistency across all packages and for easier analysis
       - Primary keys are renamed from `id` to `<table name>_id`. 
       - Foreign key names explicitly map onto their related tables (ie `owner_id` -> `owner_user_id`).
@@ -93,14 +92,14 @@ Please be aware that the native `source.yml` connection set up in the package wi
 To connect your multiple schema/database sources to the package models, follow the steps outlined in the [Union Data Defined Sources Configuration](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source) section of the Fivetran Utils documentation for the union_data macro. This will ensure a proper configuration and correct visualization of connections in the DAG.
 
 
-## Step 4: Define Cost & Usage Report source table
+## Step 4: Define Cost & Usage Report source table 
 By default, this package assumes your AWS Cost & Usage Report lives in a source table called `aws_cloud_cost_report`. In the very likely case that this is not what your table is called, configure the following variable in your `dbt_project.yml`.
 
 ```yml
 # dbt_project.yml
 
 vars:
-    aws_cloud_cost_report_identifier: your_table_name 
+  aws_cloud_cost_report_identifier: your_table_name 
 ```
 
 > Note: If you are unioning multiple connectors, they must have the **same table name**. If this is not the case, we recommend configuring one AWS Data Export to include all of your sources and pipe the report data to a single Fivetran connector.

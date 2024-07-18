@@ -1,4 +1,4 @@
-with source_report as (
+with source_report as ( 
 
     select *
     from {{ ref('stg_aws_cloud_cost__report') }}
@@ -72,7 +72,7 @@ fields as (
 
     select 
         source_report.source_relation,
-        report, 
+        report,  
 
         {# Period Details #}
         line_item_usage_start_date,
@@ -231,7 +231,7 @@ final as (
             'product_to_region_code',
             'product_instance_family',
             'product_instance_type'
-        ]) }} as unique_key
+        ]) }} as unique_key 
     from fields
 )
 
