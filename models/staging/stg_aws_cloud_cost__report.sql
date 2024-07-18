@@ -26,7 +26,8 @@ final as (
     select 
         source_relation, 
         _file,
-        {{ aws_cloud_cost_regex_extract('_file') }} as report,
+        {{ aws_cloud_cost_trim( (dbt.split_part('_file', "'/'", 1) ~ "|| '/' ||" ~ dbt.split_part('_file', "'/'", 2)) ) }} as report,
+        {# {{ aws_cloud_cost_regex_extract('_file') }} as report, #}
         _line,
         _modified,
         max(_modified) over(partition by bill_billing_period_start_date, source_relation) as max_modified_for_billing_period,

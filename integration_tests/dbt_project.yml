@@ -11,3 +11,4 @@ dispatch:
 vars:
   aws_cloud_cost:
     aws_cloud_cost_schema: aws_cloud_cost_integration_tests_3
+    aws_cloud_cost_report_identifier: "aws_cost_report"

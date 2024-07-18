@@ -34,7 +34,7 @@ coalesce((REGEXP_MATCH({{ string }}, '^([^\/]+\/[^\/]+)'))[1], (REGEXP_MATCH({{ 
 
 {% macro redshift__aws_cloud_cost_regex_extract(string) %}
 
-coalesce(REGEXP_SUBSTR({{ string }}, '^([^/]+/[^/]+)', 1, 'e'), REGEXP_SUBSTR({{ string }}, '/([^/]+)/', 1, 1, 'e', 1))
+coalesce(REGEXP_SUBSTR({{ string }}, '^([^/]+/[^/]+)', 1), REGEXP_SUBSTR({{ string }}, '/([^/]+)/', 1, 1, 'e'))
 
 {%- endmacro %}
 

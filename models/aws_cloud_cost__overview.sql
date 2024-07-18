@@ -4,8 +4,7 @@
         partition_by = {'field': 'usage_start_date', 'data_type': 'date'}
             if target.type not in ['spark', 'databricks'] else ['usage_start_date'],       
         cluster_by = ['billing_period_start_date'],
-        clustered_by = ['billing_period_start_date'],
-        buckets=8,
+        liquid_clustered_by = ['billing_period_start_date'],
         unique_key='unique_key'
     )
 }}
@@ -34,9 +33,9 @@ usage_account_mapping as (
 usage_account_names as (
 
     select
-        line_item_usage_account_id,
-        line_item_usage_account_name,
-        source_relation
+        sub.line_item_usage_account_id,
+        sub.line_item_usage_account_name,
+        sub.source_relation
     from (
         {# In case the account name as been updated, let's ensure we're only grabbing the most recent one #}
         select 
@@ -45,7 +44,7 @@ usage_account_names as (
             source_relation,
             row_number() over (partition by line_item_usage_account_id, source_relation order by latest_start_date desc) = 1 as is_latest_name
         from usage_account_mapping
-    ) where is_latest_name
+    ) as sub where is_latest_name
 ),
 
 {# Sometimes records are sent with just IDs and null names. The following 2 CTEs will map account names
@@ -66,9 +65,9 @@ billing_account_mapping as (
 billing_account_names as (
 
     select
-        bill_payer_account_id,
-        bill_payer_account_name,
-        source_relation
+        sub.bill_payer_account_id,
+        sub.bill_payer_account_name,
+        sub.source_relation
     from (
         {# In case the account name as been updated, let's ensure we're only grabbing the most recent one #}
         select 
@@ -77,7 +76,7 @@ billing_account_names as (
             source_relation,
             row_number() over (partition by bill_payer_account_id, source_relation order by latest_start_date desc) = 1 as is_latest_name
         from billing_account_mapping
-    ) where is_latest_name
+    ) as sub where is_latest_name
 ),
 
 fields as (
