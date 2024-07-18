@@ -116,7 +116,7 @@ fields as (
         pricing_unit,
         line_item_usage_type,
         line_item_currency_code,
-        pricing_currency,
+        {# pricing_currency, #}
         
         {# Line Item Service Details #}
         line_item_description,
@@ -192,7 +192,7 @@ fields as (
         on source_report.line_item_usage_account_id = usage_account_names.line_item_usage_account_id
         and source_report.source_relation = usage_account_names.source_relation
 
-    {{ dbt_utils.group_by(n=43 + var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
+    {{ dbt_utils.group_by(n=42 + var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
 ),
 
 final as (
@@ -223,7 +223,6 @@ final as (
             'pricing_unit',
             'line_item_usage_type',
             'line_item_currency_code',
-            'pricing_currency',
             'line_item_description',
             'line_item_resource_id',
             'line_item_product_code',
