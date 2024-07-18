@@ -1,3 +1,15 @@
+{{
+    config(
+        materialized='table',
+        partition_by = {'field': 'usage_start_date', 'data_type': 'date'}
+            if target.type not in ['spark', 'databricks'] else ['usage_start_date'],       
+        cluster_by = ['billing_period_start_date'],
+        clustered_by = ['billing_period_start_date'],
+        buckets=8,
+        unique_key='unique_key'
+    )
+}}
+
 with source_report as (
 
     select *
@@ -75,8 +87,8 @@ fields as (
         report, 
 
         {# Period Details #}
-        line_item_usage_start_date,
-        line_item_usage_end_date,
+        cast({{ dbt.date_trunc('day', 'line_item_usage_start_date') }} as date) as usage_start_date,
+        cast({{ dbt.date_trunc('day', 'line_item_usage_end_date') }} as date) as usage_end_date, -- keep just in case
         billing_period_start_date,
         billing_period_end_date,
 
@@ -190,8 +202,8 @@ final as (
         {{ dbt_utils.generate_surrogate_key([
             'source_relation',
             'report', 
-            'line_item_usage_start_date',
-            'line_item_usage_end_date',
+            'usage_start_date',
+            'usage_end_date',
             'billing_period_start_date',
             'billing_period_end_date',
             'line_item_usage_account_id',
