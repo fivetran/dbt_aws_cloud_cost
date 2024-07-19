@@ -26,10 +26,7 @@ final as (
     select 
         source_relation, 
         _file,
-        {# {{ dbt.split_part('_file', "'/'", 1) }} as report_path_1,
-        {{ dbt.split_part('_file', "'/'", 2) }} as report_path_2, #}
-        {{ aws_cloud_cost_trim( dbt.concat([dbt.split_part('_file', "'/'", 1), "'/'", dbt.split_part('_file', "'/'", 2)]) ) }} as report,
-        {# {{ aws_cloud_cost_regex_extract('_file') }} as report, #}
+        {{ aws_cloud_cost_trim( dbt.concat([ dbt.split_part('_file', "'/'", 1), "'/'", dbt.split_part('_file', "'/'", 2) ]) ) }} as report,
         _line,
         _modified,
         max(_modified) over(partition by bill_billing_period_start_date, source_relation) = _modified as is_latest_file_version,

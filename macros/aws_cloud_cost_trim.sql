@@ -14,12 +14,12 @@ TRIM(BOTH '/' FROM ({{ string }}))
 
 {% macro bigquery__aws_cloud_cost_trim(string) %}
 
-TRIM('/', ({{ string }}))
+TRIM({{ string }}, '/')
 
 {%- endmacro %}
 
 {% macro snowflake__aws_cloud_cost_trim(string) %}
 
-TRIM('/', ({{ string }}))
+TRIM({{ string }}, '/')
 
 {%- endmacro %}
