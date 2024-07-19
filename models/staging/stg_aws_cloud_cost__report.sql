@@ -119,4 +119,5 @@ final as (
 select *
 from final
 where is_latest_file_version
+{# or should this be a number_of_years integer value? #}
 and billing_period_start_date >= '{{ var("aws_cloud_cost_start_date", "1970-01-01") }}'

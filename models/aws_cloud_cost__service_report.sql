@@ -43,6 +43,7 @@ final as (
 
     select
         *,
+        {# Grain is connector - report - account - usage day - billing month - currency + usage units - AWS product #}
         {{ dbt_utils.generate_surrogate_key([
             'source_relation',
             'report',
