@@ -12,3 +12,12 @@ vars:
   aws_cloud_cost:
     aws_cloud_cost_schema: aws_cloud_cost_integration_tests_3
     aws_cloud_cost_report_identifier: "aws_cost_report"
+
+
+seeds:
+  aws_cloud_cost_integration_tests:
+    +quote_columns: "{{ true if target.type in ('redshift', 'postgres') else false }}"
+    aws_cost_report:
+      +column_types:
+        line_item_usage_start_date: timestamp
+        line_item_usage_end_date: timestamp
