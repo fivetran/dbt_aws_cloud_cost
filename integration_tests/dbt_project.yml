@@ -23,3 +23,5 @@ seeds:
       +column_types:
         line_item_usage_start_date: timestamp
         line_item_usage_end_date: timestamp
+        bill_billing_period_start_date: timestamp
+        bill_billing_period_end_date: timestamp
