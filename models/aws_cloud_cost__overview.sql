@@ -193,53 +193,60 @@ fields as (
 ),
 
 final as (
+{%- set composite_key = [
+        'source_relation',
+        'report', 
+        'usage_start_date',
+        'usage_end_date',
+        'billing_period_start_date',
+        'billing_period_end_date',
+        'line_item_usage_account_id',
+        'line_item_usage_account_name',
+        'bill_payer_account_id',
+        'bill_payer_account_name',
+        'bill_invoice_id',
+        'bill_invoicing_entity',
+        'billing_entity',
+        'bill_type', 
+        'line_item_type',
+        'line_item_tax_type',
+        'pricing_purchase_option',
+        'pricing_term',
+        'product_fee_code',
+        'product_fee_description',
+        'pricing_unit',
+        'line_item_usage_type',
+        'line_item_currency_code',
+        'line_item_description',
+        'line_item_resource_id',
+        'line_item_product_code',
+        'product_service_code',
+        'product_name',
+        'product_family',
+        'operation',
+        'product_location',
+        'product_location_type',
+        'product_region_code',
+        'line_item_availability_zone',
+        'product_from_location',
+        'product_from_location_type',
+        'product_from_region_code',
+        'product_to_location',
+        'product_to_location_type',
+        'product_to_region_code',
+        'product_instance_family',
+        'product_instance_type'
+    ] 
+-%}
+
+{% for field in var('aws_cloud_cost_report_pass_through_columns', [])  -%}
+    {% set field_name = field.alias|default(field.name)|lower %}
+    {% do composite_key.append(field_name) %}
+{% endfor -%}
 
     select 
         *, 
-        {{ dbt_utils.generate_surrogate_key([
-            'source_relation',
-            'report', 
-            'usage_start_date',
-            'usage_end_date',
-            'billing_period_start_date',
-            'billing_period_end_date',
-            'line_item_usage_account_id',
-            'line_item_usage_account_name',
-            'bill_payer_account_id',
-            'bill_payer_account_name',
-            'bill_invoice_id',
-            'bill_invoicing_entity',
-            'billing_entity',
-            'bill_type', 
-            'line_item_type',
-            'line_item_tax_type',
-            'pricing_purchase_option',
-            'pricing_term',
-            'product_fee_code',
-            'product_fee_description',
-            'pricing_unit',
-            'line_item_usage_type',
-            'line_item_currency_code',
-            'line_item_description',
-            'line_item_resource_id',
-            'line_item_product_code',
-            'product_service_code',
-            'product_name',
-            'product_family',
-            'operation',
-            'product_location',
-            'product_location_type',
-            'product_region_code',
-            'line_item_availability_zone',
-            'product_from_location',
-            'product_from_location_type',
-            'product_from_region_code',
-            'product_to_location',
-            'product_to_location_type',
-            'product_to_region_code',
-            'product_instance_family',
-            'product_instance_type'
-        ]) }} as unique_key
+        {{ dbt_utils.generate_surrogate_key(composite_key) }} as unique_key
     from fields
 )
 

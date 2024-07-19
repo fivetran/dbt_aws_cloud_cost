@@ -20,16 +20,15 @@ This package models AWS Cloud Cost data from [Fivetran's connector](https://five
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
 <!--section="aws_cloud_cost_model"-->
-  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost_source/models/?g_v=1) which leverage data in the format described by [this ERD](https://fivetran.com/docs/applications/aws-cost-report/#schemainformation). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws-cost-report) for analysis by doing the following:
+  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost/models/?g_v=1) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
   - Name columns for consistency across all packages and for easier analysis
-      - Primary keys are renamed from `id` to `<table name>_id`. 
-      - Foreign key names explicitly map onto their related tables (ie `owner_id` -> `owner_user_id`).
-      - Datetime fields are renamed to `<event happened>_at`.
+      - Primary keys are renamed from `id` to `<table name>_id`.
+      - Redundant column names are shortened (ex: `bill_bill_type` -> `bill_type`).
   - Adds column-level testing where applicable. For example, all primary keys are tested for uniqueness and non-null values.
   - Generates a comprehensive data dictionary of your AWS Cloud Cost data through the [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/).
-  - [Insert additional custom details here.]
+  - Takes latest version of billing month report exports.
 
-> This package does not apply freshness tests to source data due to the variability of survey cadences.
+> This package does not apply freshness tests.
 
 <!--section="aws_cloud_cost_model"-->
 The following table provides a detailed list of all models materialized within this package by default. 
@@ -106,6 +105,10 @@ vars:
 > Note: If you are unioning multiple connectors, they must have the **same table name**. If this is not the case, we recommend configuring one AWS Data Export to include all of your sources and pipe the report data to a single Fivetran connector.
 
 ## (Optional) Step 5: Additional configurations
+
+### Limit Date Range 
+<TO FILL IN AFTER CONFIRMING WE WANNA DO THIS.>
+
 ### Passing Through Additional Fields
 This package includes all source columns defined in the macros folder. You can add more columns using the `aws_cloud_cost_report_pass_through_columns` variable. This variables allow for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring extra fields to include:
 
