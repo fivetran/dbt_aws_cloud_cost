@@ -159,7 +159,7 @@ fields as (
         count(*) as count_line_items,
 
         {# Cost & Usage Metrics - Reservations 
-            Using MAX's under the assumption that there is a 1:Many relationship between Reservations and Line Items 
+            Using MAX's + MIN's under the assumption that there is a 1:Many relationship between Reservations and Line Items 
         #}
         max(reservation_amortized_upfront_cost_for_usage) as reservation_amortized_upfront_cost_for_usage,
         max(reservation_amortized_upfront_fee_for_billing_period) as reservation_amortized_upfront_fee_for_billing_period,
@@ -169,11 +169,12 @@ fields as (
         max(units_per_reservation) as units_per_reservation,
         max(total_reserved_normalized_units) as total_reserved_normalized_units,
         max(total_reserved_units) as total_reserved_units,
+        
         max(reservation_recurring_fee_for_usage) as reservation_recurring_fee_for_usage,
-        max(reservation_unused_amortized_upfront_fee_for_billing_period) as reservation_unused_amortized_upfront_fee_for_billing_period,
-        max(reservation_unused_normalized_unit_quantity) as reservation_unused_normalized_unit_quantity,
-        max(reservation_unused_quantity) as reservation_unused_quantity,
-        max(reservation_unused_recurring_fee) as reservation_unused_recurring_fee,
+        min(reservation_unused_amortized_upfront_fee_for_billing_period) as reservation_unused_amortized_upfront_fee_for_billing_period,
+        min(reservation_unused_normalized_unit_quantity) as reservation_unused_normalized_unit_quantity,
+        min(reservation_unused_quantity) as reservation_unused_quantity,
+        min(reservation_unused_recurring_fee) as reservation_unused_recurring_fee,
         max(reservation_upfront_value) as reservation_upfront_value,
 
         {# Cost & Usage Metrics - Savings Plans #}
