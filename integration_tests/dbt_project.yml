@@ -25,3 +25,4 @@ seeds:
         line_item_usage_end_date: timestamp
         bill_billing_period_start_date: timestamp
         bill_billing_period_end_date: timestamp
+        bill_bill_type: "{{ 'string' if target.name in ['bigquery','spark', 'databricks'] else 'varchar' }}"
