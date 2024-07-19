@@ -96,9 +96,6 @@ models:
       - name: line_item_usage_type
         description: '{{ doc("line_item_usage_type") }}'
 
-      - name: pricing_currency
-        description: '{{ doc("pricing_currency") }}'
-
       - name: pricing_public_on_demand_cost
         description: '{{ doc("pricing_public_on_demand_cost") }}'
 

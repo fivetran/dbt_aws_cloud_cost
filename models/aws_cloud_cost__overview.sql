@@ -114,7 +114,6 @@ fields as (
         pricing_unit,
         line_item_usage_type,
         line_item_currency_code,
-        {# pricing_currency, #}
         
         {# Line Item Service Details #}
         line_item_description,

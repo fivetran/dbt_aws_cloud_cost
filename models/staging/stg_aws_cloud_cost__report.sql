@@ -26,11 +26,13 @@ final as (
     select 
         source_relation, 
         _file,
+        {# {{ dbt.split_part('_file', "'/'", 1) }} as report_path_1,
+        {{ dbt.split_part('_file', "'/'", 2) }} as report_path_2, #}
         {{ aws_cloud_cost_trim( dbt.concat([dbt.split_part('_file', "'/'", 1), "'/'", dbt.split_part('_file', "'/'", 2)]) ) }} as report,
         {# {{ aws_cloud_cost_regex_extract('_file') }} as report, #}
         _line,
         _modified,
-        max(_modified) over(partition by bill_billing_period_start_date, source_relation) as max_modified_for_billing_period,
+        max(_modified) over(partition by bill_billing_period_start_date, source_relation) = _modified as is_latest_file_version,
         bill_bill_type as bill_type,
         bill_billing_entity as billing_entity,
         bill_billing_period_start_date as billing_period_start_date,
@@ -59,7 +61,6 @@ final as (
         line_item_usage_end_date,
         line_item_usage_start_date,
         line_item_usage_type,
-        {# pricing_currency, #}
         pricing_public_on_demand_cost,
         pricing_public_on_demand_rate,
         pricing_purchase_option,
@@ -119,4 +120,4 @@ final as (
 
 select *
 from final
-where _modified = max_modified_for_billing_period
+where is_latest_file_version
