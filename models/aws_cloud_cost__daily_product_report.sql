@@ -1,7 +1,7 @@
 with base as (
 
     select *
-    from {{ ref('aws_cloud_cost__overview') }}
+    from {{ ref('aws_cloud_cost__daily_overview') }}
 ),
 
 fields as (
@@ -20,7 +20,6 @@ fields as (
         pricing_unit,
         product_code,
         product_name,
-        count(distinct resource_id) as count_resources,
         count(distinct region_code) as count_regions,
         count(distinct usage_type) as count_instances,
         sum(coalesce(usage_amount, 0)) as usage_amount,

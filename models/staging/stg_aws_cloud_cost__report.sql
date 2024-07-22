@@ -50,7 +50,6 @@ final as (
         line_item_tax_type,
         coalesce(line_item_operation, product_operation) as operation,
         line_item_product_code as product_code,
-        line_item_resource_id as resource_id, -- null unless you've enabled `INCLUDE RESOURCES` in your AWS CUR configuration
         line_item_unblended_cost as unblended_cost,
         line_item_unblended_rate as unblended_rate,
         line_item_usage_account_id as usage_account_id,

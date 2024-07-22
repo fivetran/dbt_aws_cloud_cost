@@ -1,7 +1,7 @@
 config-version: 2
 name: 'aws_cloud_cost'
 version: '0.1.0'
-require-dbt-version: [">=1.3.0", "<2.0.0"]
+require-dbt-version: [">=1.8.0", "<2.0.0"]
 
 models:
   aws_cloud_cost:
@@ -17,3 +17,4 @@ models:
 vars:
   aws_cloud_cost_report: "{{ source('aws_cloud_cost', 'report') }}"
   aws_cloud_cost_report_pass_through_columns: []
+  aws_cloud_cost_sources: []

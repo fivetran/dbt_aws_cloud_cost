@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: aws_cloud_cost__overview
+  - name: aws_cloud_cost__daily_overview
     description: >
       Aggregation of the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS.
       Includes commonly analyzed dimensions, all available metrics, and fields added via the `aws_cloud_cost_report_pass_through_columns` variable.
@@ -68,9 +68,6 @@ models:
 
       - name: line_item_product_code
         description: '{{ doc("line_item_product_code") }}'
-
-      - name: line_item_resource_id
-        description: '{{ doc("line_item_resource_id") }}'
 
       - name: line_item_tax_type
         description: '{{ doc("line_item_tax_type") }}'

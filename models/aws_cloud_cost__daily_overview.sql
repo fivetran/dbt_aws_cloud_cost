@@ -117,7 +117,6 @@ fields as (
         
         {# Line Item Service Details #}
         line_item_description,
-        resource_id, -- null unless you've enabled `INCLUDE RESOURCES` in your AWS CUR configuration
         product_code,
         product_name,
         product_service_code, -- service is within product
@@ -145,45 +144,45 @@ fields as (
         {{ fivetran_utils.persist_pass_through_columns(pass_through_variable='aws_cloud_cost_report_pass_through_columns') }},
 
         {# Usage Metrics #}
-        sum(coalesce(usage_amount, 0)) as usage_amount,
-        sum(coalesce(normalized_usage_amount, 0)) as normalized_usage_amount,
-        max(normalization_factor) as normalization_factor,
+        cast(sum(coalesce(usage_amount, 0)) as {{ dbt.type_numeric() }}) as usage_amount,
+        cast(sum(coalesce(normalized_usage_amount, 0)) as {{ dbt.type_numeric() }}) as normalized_usage_amount,
+        cast(max(normalization_factor) as {{ dbt.type_numeric() }}) as normalization_factor,
 
         {# Cost Metrics - General #}
-        sum(coalesce(blended_cost, 0)) as blended_cost,
-        sum(coalesce(unblended_cost, 0)) as unblended_cost,
-        sum(coalesce(public_on_demand_cost, 0)) as public_on_demand_cost,
-        avg(blended_rate) as avg_blended_rate,
-        avg(unblended_rate) as avg_unblended_rate,
-        avg(public_on_demand_rate) as avg_public_on_demand_rate,
-        count(*) as count_line_items,
+        cast(sum(coalesce(blended_cost, 0)) as {{ dbt.type_numeric() }}) as blended_cost,
+        cast(sum(coalesce(unblended_cost, 0)) as {{ dbt.type_numeric() }}) as unblended_cost,
+        cast(sum(coalesce(public_on_demand_cost, 0)) as {{ dbt.type_numeric() }}) as public_on_demand_cost,
+        cast(avg(blended_rate) as {{ dbt.type_numeric() }}) as avg_blended_rate,
+        cast(avg(unblended_rate) as {{ dbt.type_numeric() }}) as avg_unblended_rate,
+        cast(avg(public_on_demand_rate) as {{ dbt.type_numeric() }}) as avg_public_on_demand_rate,
+        cast(count(*) as {{ dbt.type_numeric() }}) as count_line_items,
 
         {# Cost & Usage Metrics - Reservations 
             Using MAX's + MIN's under the assumption that there is a 1:Many relationship between Reservations and Line Items 
         #}
-        max(reservation_amortized_upfront_cost_for_usage) as reservation_amortized_upfront_cost_for_usage,
-        max(reservation_amortized_upfront_fee_for_billing_period) as reservation_amortized_upfront_fee_for_billing_period,
-        max(reservation_effective_cost) as reservation_effective_cost,
-        max(number_of_reservations) as number_of_reservations,
-        max(normalized_units_per_reservation) as normalized_units_per_reservation,
-        max(units_per_reservation) as units_per_reservation,
-        max(total_reserved_normalized_units) as total_reserved_normalized_units,
-        max(total_reserved_units) as total_reserved_units,
+        cast(max(reservation_amortized_upfront_cost_for_usage) as {{ dbt.type_numeric() }}) as reservation_amortized_upfront_cost_for_usage,
+        cast(max(reservation_amortized_upfront_fee_for_billing_period) as {{ dbt.type_numeric() }}) as reservation_amortized_upfront_fee_for_billing_period,
+        cast(max(reservation_effective_cost) as {{ dbt.type_numeric() }}) as reservation_effective_cost,
+        cast(max(number_of_reservations) as {{ dbt.type_numeric() }}) as number_of_reservations,
+        cast(max(normalized_units_per_reservation) as {{ dbt.type_numeric() }}) as normalized_units_per_reservation,
+        cast(max(units_per_reservation) as {{ dbt.type_numeric() }}) as units_per_reservation,
+        cast(max(total_reserved_normalized_units) as {{ dbt.type_numeric() }}) as total_reserved_normalized_units,
+        cast(max(total_reserved_units) as {{ dbt.type_numeric() }}) as total_reserved_units,
         
-        max(reservation_recurring_fee_for_usage) as reservation_recurring_fee_for_usage,
-        min(reservation_unused_amortized_upfront_fee_for_billing_period) as reservation_unused_amortized_upfront_fee_for_billing_period,
-        min(reservation_unused_normalized_unit_quantity) as reservation_unused_normalized_unit_quantity,
-        min(reservation_unused_quantity) as reservation_unused_quantity,
-        min(reservation_unused_recurring_fee) as reservation_unused_recurring_fee,
-        max(reservation_upfront_value) as reservation_upfront_value,
+        cast(max(reservation_recurring_fee_for_usage) as {{ dbt.type_numeric() }}) as reservation_recurring_fee_for_usage,
+        cast(min(reservation_unused_amortized_upfront_fee_for_billing_period) as {{ dbt.type_numeric() }}) as reservation_unused_amortized_upfront_fee_for_billing_period,
+        cast(min(reservation_unused_normalized_unit_quantity) as {{ dbt.type_numeric() }}) as reservation_unused_normalized_unit_quantity,
+        cast(min(reservation_unused_quantity) as {{ dbt.type_numeric() }}) as reservation_unused_quantity,
+        cast(min(reservation_unused_recurring_fee) as {{ dbt.type_numeric() }}) as reservation_unused_recurring_fee,
+        cast(max(reservation_upfront_value) as {{ dbt.type_numeric() }}) as reservation_upfront_value,
 
         {# Cost & Usage Metrics - Savings Plans #}
-        max(savings_plan_amortized_upfront_commitment_for_billing_period) as savings_plan_amortized_upfront_commitment_for_billing_period,
-        max(savings_plan_recurring_commitment_for_billing_period) as savings_plan_recurring_commitment_for_billing_period,
-        max(savings_plan_effective_cost) as savings_plan_effective_cost,
-        max(savings_plan_rate) as savings_plan_rate,
-        max(savings_plan_total_commitment_to_date) as savings_plan_total_commitment_to_date,
-        max(savings_plan_used_commitment) as savings_plan_used_commitment 
+        cast(max(savings_plan_amortized_upfront_commitment_for_billing_period) as {{ dbt.type_numeric() }}) as savings_plan_amortized_upfront_commitment_for_billing_period,
+        cast(max(savings_plan_recurring_commitment_for_billing_period) as {{ dbt.type_numeric() }}) as savings_plan_recurring_commitment_for_billing_period,
+        cast(max(savings_plan_effective_cost) as {{ dbt.type_numeric() }}) as savings_plan_effective_cost,
+        cast(max(savings_plan_rate) as {{ dbt.type_numeric() }}) as savings_plan_rate,
+        cast(max(savings_plan_total_commitment_to_date) as {{ dbt.type_numeric() }}) as savings_plan_total_commitment_to_date,
+        cast(max(savings_plan_used_commitment) as {{ dbt.type_numeric() }}) as savings_plan_used_commitment 
 
     from source_report
     left join billing_account_names
@@ -193,7 +192,7 @@ fields as (
         on source_report.usage_account_id = usage_account_names.usage_account_id
         and source_report.source_relation = usage_account_names.source_relation
 
-    {{ dbt_utils.group_by(n=42 + var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
+    {{ dbt_utils.group_by(n=41 + var('aws_cloud_cost_report_pass_through_columns',[])|length) }}
 ),
 
 final as (
@@ -222,7 +221,6 @@ final as (
         'usage_type',
         'currency_code',
         'line_item_description',
-        'resource_id',
         'product_code',
         'product_service_code',
         'product_name',

@@ -10,3 +10,12 @@
         union_database_variable='aws_cloud_cost_union_databases'
     )
 }}
+
+{# {{
+    union_aws_cost_report_connections(
+        connection_dictionary=var('aws_cloud_cost_sources'),
+        single_schema=var('aws_cloud_cost_schema', 'aws_cloud_cost'),
+        single_database=var('aws_cloud_cost_schema', target.database),
+        single_table_identifier=var("aws_cloud_cost_report_identifier", "aws_cost_report")
+    )
+}} #}
