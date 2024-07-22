@@ -73,9 +73,6 @@ models:
       - name: line_item_product_code
         description: '{{ doc("line_item_product_code") }}'
 
-      - name: line_item_resource_id
-        description: '{{ doc("line_item_resource_id") }}'
-
       - name: line_item_tax_type
         description: '{{ doc("line_item_tax_type") }}'
 

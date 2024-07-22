@@ -17,7 +17,7 @@
     {%- endfor -%}
 
     {%- if relations != [] -%}
-        {{ fivetran_union_relations(relations) }}
+        {{ aws_cloud_cost_union_relations(relations) }}
     {%- else -%}
         {% if execute and not var('fivetran__remove_empty_table_warnings', false) -%}
         {{ exceptions.warn("\n\nPlease be aware: The AWS Cost Report table was not found in your schema(s). The Fivetran Data Model will create a completely empty staging model as to not break downstream transformations. To turn off these warnings, set the `fivetran__remove_empty_table_warnings` variable to TRUE (see https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source for details).\n") }}
