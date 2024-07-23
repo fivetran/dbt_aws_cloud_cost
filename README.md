@@ -10,11 +10,9 @@
         <img src="https://img.shields.io/badge/Contributions-welcome-blueviolet" /></a>
 </p>
 
-# 🚧 **WIP** 🚧
+# (🚧 **WIP** 🚧) AWS Cloud Cost dbt Package ([Docs](https://fivetran.github.io/dbt_aws_cloud_cost/))
 
-# AWS Cloud Cost dbt Package ([Docs](https://fivetran.github.io/dbt_aws_cloud_cost/))
-
-# 📣 What does this dbt package do?
+## 📣 What does this dbt package do?
 
 This package models AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by [this ERD](https://fivetran.com/docs/applications/aws_cloud_cost#schemainformation).
 
@@ -41,15 +39,15 @@ The following table provides a detailed list of all models materialized within t
 | [aws_cloud_cost__daily_product_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_product_report.sql)  | Daily view of each account's use of individual AWS products (and associated costs) for each billing period.   |
 <!--section-end-->
 
-# 🎯 How do I use the dbt package?
+## 🎯 How do I use the dbt package?
 
-## Step 1: Prerequisites
+### Step 1: Prerequisites
 To use this dbt package, you must have the following:
 
 - At least one Fivetran AWS Cloud Cost connector syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **Databricks**, or **PostgreSQL** destination.
 
-### Databricks dispatch configuration
+#### Databricks dispatch configuration
 If you are using a Databricks destination with this package, you must add the following (or a variation of the following) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils` packages respectively.
 ```yml
 dispatch:
@@ -57,7 +55,7 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 ```
 
-## Step 2: Install the package
+### Step 2: Install the package
 Include the following AWS Cloud Cost package version in your `packages.yml` file:
 > TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
 ```yml
@@ -66,8 +64,8 @@ packages:
     version: [">=0.1.0", "<0.2.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 
-## Step 3: Define database and schema variables
-### Single connector
+### Step 3: Define database and schema variables
+#### Single connector
 By default, this package runs using your destination and the `aws_cloud_cost` schema. If this is not where your AWS Cloud Cost data is (for example, if your AWS Cloud Cost schema is named `aws_cloud_cost_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
 ```yml
@@ -78,7 +76,7 @@ vars:
     aws_cloud_cost_schema: your_schema_name
 ```
 
-### Union multiple connectors
+#### Union multiple connectors
 If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from in the `source_relation` column of each model. To use this functionality, you will need to set either the `aws_cloud_cost_union_schemas` OR `aws_cloud_cost_union_databases` variables (cannot do both) in your root `dbt_project.yml` file:
 
 ```yml
@@ -106,9 +104,9 @@ vars:
 
 > Note: If you are unioning multiple connectors, they must have the **same table name**. If this is not the case, we recommend configuring one AWS Data Export to include all of your sources and pipe the report data to a single Fivetran connector.
 
-## (Optional) Step 5: Additional configurations
+### (Optional) Step 5: Additional configurations
 
-### Limit Date Range
+#### Limit Date Range
 Although the package transforms the latest version of each report, your AWS Cost & Usage Report data may still be quite large. In order to avoid unnecessary compute and storage costs, we have added a minimum **start date** variable that can be used to limit the data's date range.
 
 By default, the package will look at data as far back as you have it. To adjust this, configure the following variable in your `dbt_project.yml` to be the first date you want *included*:
@@ -119,7 +117,7 @@ vars:
     aws_cloud_cost_start_date: 'YYYY-MM-DD' # default value: '1970-01-01' 
 ```
 
-### Passing Through Additional Fields
+#### Passing Through Additional Fields
 This package includes all source columns defined in the macros folder. You can add more columns using the `aws_cloud_cost_report_pass_through_columns` variable. This variables allow for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring extra fields to include:
 
 ```yml
@@ -139,7 +137,7 @@ vars:
 
 > Please create an [issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues) if you'd like to see passthrough column support for other tables in the Qualtrics schema.
 
-### Changing the Build Schema
+#### Changing the Build Schema
 By default this package will build the AWS Cloud Cost staging models within a schema titled (<target_schema> + `_stg_aws_cloud_cost`) and the AWS Cloud Cost final models within a schema titled (<target_schema> + `_aws_cloud_cost`) in your target database. If this is not where you would like your modeled qualtrics data to be written to, add the following configuration to your `dbt_project.yml` file:
 
 ```yml
@@ -154,7 +152,7 @@ models:
 </details>
 
 
-## (Optional) Step 6: Orchestrate your models with Fivetran Transformations for dbt Core™
+### (Optional) Step 6: Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
     
@@ -175,15 +173,15 @@ packages:
       version: [">=1.0.0", "<2.0.0"]
 ```
 
-# 🙌 How is this package maintained and can I contribute?
-## Package Maintenance
+## 🙌 How is this package maintained and can I contribute?
+### Package Maintenance
 The Fivetran team maintaining this package _only_ maintains the latest version of the package. We highly recommend you stay consistent with the [latest version](https://hub.getdbt.com/fivetran/aws_cloud_cost/latest/) of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
 
-## Contributions
+### Contributions
 A small team of analytics engineers at Fivetran develops these dbt packages. However, the packages are made better by community contributions! 
 
 We highly encourage and welcome contributions to this package. Check out [this dbt Discourse article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) on the best workflow for contributing to a package!
 
-# 🏪 Are there any resources available?
+## 🏪 Are there any resources available?
 - If you have questions or want to reach out for help, please refer to the [GitHub Issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues/new/choose) section to find the right avenue of support for you.
 - If you would like to provide feedback to the dbt package team at Fivetran or would like to request a new dbt package, fill out our [Feedback Form](https://www.surveymonkey.com/r/DQ7K7WW).
