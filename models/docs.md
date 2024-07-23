@@ -39,26 +39,37 @@ The type of bill that this report covers. There are three bill types:
 - Purchase: Line items for upfront service fees.
 - Refund: Line items for refunds. These will have negative cost amounts.
 
+Aliased from `bill_bill_type` to `bill_type` in the staging layer.
 {% enddocs %}
 
 {% docs bill_billing_entity %}
 Helps you identify whether your invoices or transactions are for AWS Marketplace or for purchases of any other AWS services.
+
+Aliased from `bill_billing_entity` to `billing_entity` in the staging layer.
 {% enddocs %}
 
 {% docs bill_billing_period_end_date %}
 The end date of the billing period that is covered by this report, in UTC. The format is `YYYY-MM-DDTHH:mm:ssZ`.
+
+Aliased from `bill_billing_period_end_date` to `billing_period_end_date` in the staging layer.
 {% enddocs %}
 
 {% docs bill_billing_period_start_date %}
 The start date of the billing period that is covered by this report, in UTC. The format is `YYYY-MM-DDTHH:mm:ssZ`.
+
+Aliased from `bill_billing_period_start_date` to `billing_period_start_date` in the staging layer.
 {% enddocs %}
 
 {% docs bill_invoice_id %}
 The ID associated with a specific line item. Until the report is final, the field is blank.
+
+Aliased from `bill_invoice_id` to `invoice_id` in the staging layer.
 {% enddocs %}
 
 {% docs bill_invoicing_entity %}
 The AWS entity that issues the invoice.
+
+Aliased from `bill_invoicing_entity` to `invoicing_entity` in the staging layer.
 {% enddocs %}
 
 {% docs bill_payer_account_id %}
@@ -93,24 +104,32 @@ The time interval that this line item applies to, in the following format: `YYYY
 
 {% docs line_item_availability_zone %}
 The Availability Zone that hosts this line item. For example, `us-east-1a` or `us-east-1b`. Availability Zones are multiple, isolated locations within each Region.
+
+Aliased from `line_item_availability_zone` to `availability_zone` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_blended_cost %}
-The `BlendedRate` multiplied by the `UsageAmount`.
+The `blended_rate` multiplied by the `usage_amount`.
 
-`BlendedCost` is blank for line items that have a `LineItemType` of `Discount`. Discounts are calculated using only the unblended cost of a member account, aggregated by member account and SKU. As a result, `BlendedCost` is not available for discounts.
+`blended_cost` is blank for line items that have a `line_item_type` of `Discount`. Discounts are calculated using only the unblended cost of a member account, aggregated by member account and SKU. As a result, `blended_cost` is not available for discounts.
+
+Aliased from `line_item_blended_cost` to `blended_cost` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_blended_rate %}
-The BlendedRate is the average cost incurred for each SKU across an organization.
+The `blended_rate` is the average cost incurred for each SKU across an organization.
 
 For example, the Amazon S3 blended rates are the total cost of storage divided by the amount of data stored per month. For accounts with RIs, the blended rates are calculated as the average costs of the RIs and the On-Demand Instances.
 
 Blended rates are calculated at the management account level, and used to allocate costs to each member account. For more information, see Blended Rates and Costs in the AWS Billing User [Guide](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/con-bill-blended-rates.html#Blended_CB).
+
+Aliased from `line_item_blended_rate` to `blended_rate` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_currency_code %}
 The currency that this line item is shown in. All AWS customers are billed in US dollars by default.
+
+Aliased from `line_item_currency_code` to `currency_code` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_legal_entity %}
@@ -127,6 +146,8 @@ The description of the line item type. For example, the description of a usage l
 For size-flexible RIs, the description corresponds to the RI the benefit was applied to. For example, if a line item corresponds to a `t2.micro` and a `t2.small` RI was applied to the usage, the `line_item_line_item_description` displays `t2.small`.
 
 The description for a usage line item with an RI discount contains the pricing plan covered by the line item.
+
+Aliased from `line_item_line_item_description` to `line_item_description` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_line_item_type %}
@@ -146,22 +167,31 @@ The type of charge covered by this line item. The possible types are as follows:
 - `SavingsPlanCoveredUsage`: Any On-Demand cost that is covered by your Savings Plan. Savings Plan covered usage line items are offset by the corresponding Savings Plan negation items.
 - `SavingsPlanNegation` – Any offset cost through your Savings Plan benefit that’s associated with the corresponding Savings Plan covered usage item.
 
+Aliased from `line_item_line_item_type` to `line_item_type` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_normalization_factor %}
 As long as the instance has shared tenancy, AWS can apply all Regional Linux or Unix Amazon EC2 and Amazon RDS RI discounts to all instance sizes in an instance family and AWS Region. This also applies to RI discounts for member accounts in an organization. All new and existing Amazon EC2 and Amazon RDS size-flexible RIs are sized according to a normalization factor, based on the instance size.
+
+Aliased from `line_item_normalization_factor` to `normalization_factor` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_normalized_usage_amount %}
 The amount of usage that you incurred, in normalized units, for size-flexible RIs. This is equal to `line_item_usage_amount` multiplied by `line_item_normalization_factor`.
+
+Aliased from `line_item_normalized_usage_amount` to `normalized_usage_amount` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_operation %}
 The specific AWS operation covered by this line item. This describes the specific usage of the line item. For example, a value of `RunInstances` indicates the operation of an Amazon EC2 instance.
+
+Aliased from `line_item_operation` to `operation` and coalesced with `product_operation` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_product_code %}
 The code of the product measured. For example, Amazon EC2 is the product code for Amazon Elastic Compute Cloud.
+
+Aliased from `line_item_product_code` to `product_code` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_resource_id %}
@@ -170,42 +200,60 @@ The code of the product measured. For example, Amazon EC2 is the product code fo
 
 {% docs line_item_tax_type %}
 The type of tax that AWS applied to this line item. Null if `line_item_line_item_type != 'Tax'`
+
+Aliased from `line_item_tax_type` to `tax_type` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_unblended_cost %}
-The UnblendedCost is the UnblendedRate multiplied by the UsageAmount.
+The `unblended_Cost` is the `unblended_rate` multiplied by the `usageAmount`.
+
+Aliased from `line_item_tax_type` to `tax_type` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_unblended_rate %}
 In consolidated billing for accounts using AWS Organizations, the unblended rate is the rate associated with an individual account's service usage.
 
 For Amazon EC2 and Amazon RDS line items that have an RI discount applied to them, the unblended rate is 0.
+
+Aliased from `line_item_unblended_rate` to `unblended_rate` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_usage_account_id %}
 The account ID of the account that used this line item. For organizations, this can be either the management account or a member account. You can use this field to track costs or usage by account.
+
+Aliased from `line_item_usage_account_id` to `usage_account_id` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_usage_account_name %}
 The name of the account that used this line item. For organizations, this can be either the management account or a member account. You can use this field to track costs or usage by account.
+
+Aliased from `line_item_usage_account_name` to `usage_account_name` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_usage_amount %}
 The amount of usage that you incurred during the specified time period. For size-flexible Reserved Instances, use the `reservation_total_reserved_units` column instead.
 
 Certain subscription charges will have a Usage Amount of 0.
+
+Aliased from `line_item_usage_amount` to `usage_amount` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_usage_end_date %}
 The end date and time for the corresponding line item in UTC, exclusive. The format is `YYYY-MM-DDTHH:mm:ssZ`.
+
+Aliased from `line_item_usage_end_date` to `usage_end_date` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_usage_start_date %}
 The start date and time for the line item in UTC, inclusive. The format is `YYYY-MM-DDTHH:mm:ssZ`.
+
+Aliased from `line_item_usage_start_date` to `usage_start_date` in the staging layer.
 {% enddocs %}
 
 {% docs line_item_usage_type %}
 The usage details of the line item. For example, `USW2-BoxUsage:m2.2xlarge` describes an M2 High Memory Double Extra Large instance in the US West (Oregon) Region.
+
+Aliased from `line_item_usage_type` to `usage_type` in the staging layer.
 {% enddocs %}
 
 {% docs pricing_currency %}
@@ -222,14 +270,20 @@ The offering class of the [Reserved Instance](https://docs.aws.amazon.com/AWSEC2
 
 {% docs pricing_public_on_demand_cost %}
 The total cost for the line item based on public On-Demand Instance rates. If you have SKUs with multiple On-Demand public costs, the equivalent cost for the highest tier is displayed. For example, services offering free-tiers or tiered pricing.
+
+Aliased from `pricing_public_on_demand_cost` to `public_on_demand_cost` in the staging layer.
 {% enddocs %}
 
 {% docs pricing_public_on_demand_rate %}
 The public On-Demand Instance rate in this billing period for the specific line item of usage. If you have SKUs with multiple On-Demand public rates, the equivalent rate for the highest tier is displayed. For example, services offering free-tiers or tiered pricing.
+
+Aliased from `pricing_public_on_demand_rate` to `public_on_demand_rate` in the staging layer.
 {% enddocs %}
 
 {% docs pricing_purchase_option %}
 How you chose to pay for this line item. Valid values are `All Upfront`, `Partial Upfront`, and `No Upfront`.
+
+Aliased from `pricing_purchase_option` to `purchase_option` in the staging layer.
 {% enddocs %}
 
 {% docs pricing_rate_code %}
@@ -264,54 +318,80 @@ The description for the product fee.
 
 {% docs product_from_location %}
 Describes the location where the usage originated from.
+
+Aliased from `product_from_location` to `from_location` in the staging layer.
 {% enddocs %}
 
 {% docs product_from_location_type %}
 Describes the location type where the usage originated from.
+
+Aliased from `product_from_location_type` to `from_location_type` in the staging layer.
 {% enddocs %}
 
 {% docs product_from_region_code %}
 Describes the source Region code for the AWS service.
+
+Aliased from `product_from_region_code` to `from_region_code` in the staging layer.
 {% enddocs %}
 
 {% docs product_instance_family %}
 Describes your Amazon EC2 instance family. Amazon EC2 provides you with a large number of options across 10 different instance types, each with one or more size options, organized into distinct instance families optimized for different types of applications.
+
+Aliased from `product_instance_family` to `instance_family` in the staging layer.
 {% enddocs %}
 
 {% docs product_instance_type %}
 Describes the instance type, size, and family, which define the CPU, networking, and storage capacity of your instance.
+
+Aliased from `product_instance_type` to `product_instance` in the staging layer.
 {% enddocs %}
 
 {% docs product_location %}
 Describes the Region that your Amazon S3 bucket resides in.
+
+Aliased from `product_location` to `location` in the staging layer.
 {% enddocs %}
 
 {% docs product_location_type %}
 Describes the endpoint of your task.
+
+Aliased from `product_location_type` to `location_type` in the staging layer.
 {% enddocs %}
 
 {% docs product_operation %}
 Describes the specific AWS operation that this line item covers.
+
+Aliased from `product_operation` to `operation` and coalesced with `line_item_operation` in the staging layer.
 {% enddocs %}
 
 {% docs product_pricing_unit %}
 The smallest billing unit for an AWS service. For example, 0.01c per API call.
+
+Aliased from `product_pricing_unit` to `pricing_unit` and coalesced with `pricing_unit` in the staging layer.
 {% enddocs %}
 
 {% docs product_product_family %}
 The category for the type of product.
+
+Aliased from `product_product_family` to `product_family` in the staging layer.
 {% enddocs %}
 
 {% docs product_product_name %}
 The longform name of the product.
+
+Aliased from `product_product_name` to `product_name` in the staging layer.
 {% enddocs %}
 
 {% docs product_region_code %}
 A Region is a physical location around the world where data centers are clustered. AWS calls each group of logical data centers an Availability Zone (AZ). Each AWS Region consists of multiple, isolated, and physically separate AZs within a geographical area. The Region code attribute has the same name as an AWS Region, and specifies where the AWS service is available.
+
+Aliased from `product_region_code` to `region_code` in the staging layer.
 {% enddocs %}
 
 {% docs product_servicecode %}
 This identifies the specific AWS service to the customer as a unique short abbreviation.
+
+Aliased from `product_servicecode` to `product_service_code` in the staging layer.
 {% enddocs %}
 
 {% docs product_sku %}
@@ -320,14 +400,20 @@ A unique code for a product. The SKU is created by combining the `line_item_prod
 
 {% docs product_to_location %}
 Describes the location usage destination.
+
+Aliased from `product_to_location` to `to_location` in the staging layer.
 {% enddocs %}
 
 {% docs product_to_location_type %}
 Describes the destination location of the service usage.
+
+Aliased from `product_to_location_type` to `to_location_type` in the staging layer.
 {% enddocs %}
 
 {% docs product_to_region_code %}
 Describes the source Region code for the AWS service.
+
+Aliased from `product_to_region_code` to `to_region_code` in the staging layer.
 {% enddocs %}
 
 {% docs product_usagetype %}
@@ -362,10 +448,14 @@ Shows whether the RI lease was modified or if it is unaltered. Possible values:
 
 {% docs reservation_normalized_units_per_reservation %}
 The number of normalized units for each instance of a reservation subscription.
+
+Aliased from `reservation_normalized_units_per_reservation` to `normalized_units_per_reservation` in the staging layer.
 {% enddocs %}
 
 {% docs reservation_number_of_reservations %}
 The number of reservations that are covered by this subscription. For example, one RI subscription might have four associated RI reservations.
+
+Aliased from `reservation_number_of_reservations` to `number_of_reservations` in the staging layer.
 {% enddocs %}
 
 {% docs reservation_recurring_fee_for_usage %}
@@ -385,11 +475,13 @@ The start date of the term of the associated Reserved Instance.
 {% enddocs %}
 
 {% docs reservation_subscription_id %}
-A unique identifier that maps a line item with the associated offer. We recommend you use the RI ARN as your identifier of an AWS Reserved Instance, but both can be used.
+A unique identifier that maps a line item with the associated offer. We (AWS) recommend you use the RI ARN as your identifier of an AWS Reserved Instance, but both can be used.
 {% enddocs %}
 
 {% docs reservation_total_reserved_normalized_units %}
 The total number of reserved normalized units for all instances for a reservation subscription. AWS computes total normalized units by multiplying the `reservation_normalized_units_per_reservation` with `reservation_number_of_reservations`.
+
+Aliased from `reservation_total_reserved_normalized_units` to `total_reserved_normalized_units` in the staging layer.
 {% enddocs %}
 
 {% docs reservation_total_reserved_units %}
@@ -398,6 +490,7 @@ This field populates for both `Fee` and `RIFee` line items with distinct values.
 - Fee line items: The total number of units reserved, for the total quantity of leases purchased in your subscription for the entire term. This is calculated by multiplying the `NumberOfReservations` with `UnitsPerReservation`.
 - RIFee line items (monthly recurring costs): The total number of available units in your subscription, such as the total number of Amazon EC2 hours in a specific RI subscription.
 
+Aliased from `reservation_total_reserved_units` to `total_reserved_units` in the staging layer.
 {% enddocs %}
 
 {% docs reservation_units_per_reservation %}
@@ -406,6 +499,7 @@ This field populates for both `Fee` and `RIFee` line items with distinct values.
 - Fee line items: The total number of units reserved for the subscription, such as the total number of RI hours purchased for the term of the subscription.
 - RIFee line items (monthly recurring costs): The total number of available units in your subscription, such as the total number of Amazon EC2 hours in a specific RI subscription.
 
+Aliased from `reservation_units_per_reservation` to `units_per_reservation` in the staging layer.
 {% enddocs %}
 
 {% docs reservation_unused_amortized_upfront_fee_for_billing_period %}
@@ -468,10 +562,14 @@ The unique Savings Plan identifier.
 
 {% docs savings_plan_savings_plan_effective_cost %}
 The proportion of the Savings Plan monthly commitment amount (upfront and recurring) that is allocated to each usage line.
+
+Aliased from `savings_plan_savings_plan_effective_cost` to `savings_plan_effective_cost` in the staging layer.
 {% enddocs %}
 
 {% docs savings_plan_savings_plan_rate %}
 The Savings Plan rate for the usage.
+
+Aliased from `savings_plan_savings_plan_rate` to `savings_plan_rate` in the staging layer.
 {% enddocs %}
 
 {% docs savings_plan_start_time %}
@@ -483,5 +581,5 @@ The total amortized upfront commitment and recurring commitment to date, for tha
 {% enddocs %}
 
 {% docs savings_plan_used_commitment %}
-The total dollar amount of the Savings Plan commitment used. (SavingsPlanRate multiplied by usage)
+The total dollar amount of the Savings Plan commitment used. (`Savings_plan_rate` multiplied by usage)
 {% enddocs %}

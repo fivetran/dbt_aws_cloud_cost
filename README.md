@@ -3,7 +3,7 @@
         href="https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a>
     <a alt="dbt-core">
-        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.8.0_<2.0.0-orange.svg" /></a>
+        <img src="https://img.shields.io/badge/dbt_Core™_version->=1.3.0_<2.0.0-orange.svg" /></a>
     <a alt="Maintained?">
         <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" /></a>
     <a alt="PRs">
@@ -21,22 +21,24 @@ This package models AWS Cloud Cost data from [Fivetran's connector](https://five
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
 <!--section="aws_cloud_cost_model"-->
   - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost/models/?g_v=1) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
-  - Name columns for consistency across all packages and for easier analysis
-      - Primary keys are renamed from `id` to `<table name>_id`.
-      - Redundant column names are shortened (ex: `bill_bill_type` -> `bill_type`).
-  - Adds column-level testing where applicable. For example, all primary keys are tested for uniqueness and non-null values.
-  - Generates a comprehensive data dictionary of your AWS Cloud Cost data through the [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/).
-  - Takes latest version of billing month report exports.
+    - Names columns for consistency across all packages and for easier analysis
+        - Primary keys are renamed from `id` to `<table name>_id`.
+        - Column names are shortened for convenience and to avoid redundancy.
+    - Adds column-level testing where applicable. For example, all primary keys are tested for uniqueness and non-null values.
+    - Takes the latest export of each account's billing month report.
+    - Generates a comprehensive data dictionary of your AWS Cloud Cost data through the [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/).
+  - Creates the below analytics-ready end models.
 
 > This package does not apply freshness tests.
 
 <!--section="aws_cloud_cost_model"-->
-The following table provides a detailed list of all models materialized within this package by default. 
+The following table provides a detailed list of all models materialized within this package by default.
 > TIP: See more details about these models in the package's [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost).
 
 | **model**                 | **description**                                                                                                    |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [aws_cloud_cost__overview](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__overview.sql)  | Model description   |
+| [aws_cloud_cost__daily_overview](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_overview.sql)  | Daily aggregation of the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS. Includes slew of commonly analyzed dimensions related to [billing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-bill.html), [pricing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-pricing.html), [line item](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-line-item.html) buckets, and [products](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-product.html). Contains both high-level cost and usage metrics, along with all metrics related to [reservations](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-reservation.html) and [savings plans](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-savings-plan.html). Also includes financial reporting fieds relating to invoices and billing periods. |
+| [aws_cloud_cost__daily_product_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_product_report.sql)  | Daily view of each account's use of individual AWS products (and associated costs) for each billing period.   |
 <!--section-end-->
 
 # 🎯 How do I use the dbt package?
@@ -106,8 +108,16 @@ vars:
 
 ## (Optional) Step 5: Additional configurations
 
-### Limit Date Range 
-<TO FILL IN AFTER CONFIRMING WE WANNA DO THIS.>
+### Limit Date Range
+Although the package transforms the latest version of each report, your AWS Cost & Usage Report data may still be quite large. In order to avoid unnecessary compute and storage costs, we have added a minimum **start date** variable that can be used to limit the data's date range.
+
+By default, the package will look at data as far back as you have it. To adjust this, configure the following variable in your `dbt_project.yml` to be the first date you want *included*:
+```yml
+# dbt_project.yml
+
+vars:
+    aws_cloud_cost_start_date: 'YYYY-MM-DD' # default value: '1970-01-01' 
+```
 
 ### Passing Through Additional Fields
 This package includes all source columns defined in the macros folder. You can add more columns using the `aws_cloud_cost_report_pass_through_columns` variable. This variables allow for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring extra fields to include:

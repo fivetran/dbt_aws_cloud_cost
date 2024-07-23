@@ -19,8 +19,8 @@ models:
       - name: _modified
         description: '{{ doc("_modified") }}'
 
-      - name: max_modified_for_billing_period
-        description: '{{ doc("max_modified_for_billing_period") }}'
+      - name: is_latest_file_version
+        description: Boolean used to capture the latest export of each billing & usage report. 
 
       - name: bill_type
         description: '{{ doc("bill_bill_type") }}'
@@ -34,25 +34,25 @@ models:
       - name: billing_period_start_date
         description: '{{ doc("bill_billing_period_start_date") }}'
 
-      - name: bill_invoice_id
+      - name: invoice_id
         description: '{{ doc("bill_invoice_id") }}'
 
-      - name: bill_invoicing_entity
+      - name: invoicing_entity
         description: '{{ doc("bill_invoicing_entity") }}'
 
       - name: bill_payer_account_id
         description: '{{ doc("bill_payer_account_id") }}'
 
-      - name: line_item_availability_zone
+      - name: availability_zone
         description: '{{ doc("line_item_availability_zone") }}'
 
-      - name: line_item_blended_cost
+      - name: blended_cost
         description: '{{ doc("line_item_blended_cost") }}'
 
-      - name: line_item_blended_rate
+      - name: blended_rate
         description: '{{ doc("line_item_blended_rate") }}'
 
-      - name: line_item_currency_code
+      - name: currency_code
         description: '{{ doc("line_item_currency_code") }}'
 
       - name: line_item_description
@@ -61,49 +61,49 @@ models:
       - name: line_item_type
         description: '{{ doc("line_item_line_item_type") }}'
 
-      - name: line_item_normalization_factor
+      - name: normalization_factor
         description: '{{ doc("line_item_normalization_factor") }}'
 
-      - name: line_item_normalized_usage_amount
+      - name: normalized_usage_amount
         description: '{{ doc("line_item_normalized_usage_amount") }}'
 
       - name: operation
         description: '{{ doc("line_item_operation") }}'
 
-      - name: line_item_product_code
+      - name: product_code
         description: '{{ doc("line_item_product_code") }}'
 
-      - name: line_item_tax_type
+      - name: tax_type
         description: '{{ doc("line_item_tax_type") }}'
 
-      - name: line_item_unblended_cost
+      - name: unblended_cost
         description: '{{ doc("line_item_unblended_cost") }}'
 
-      - name: line_item_unblended_rate
+      - name: unblended_rate
         description: '{{ doc("line_item_unblended_rate") }}'
 
-      - name: line_item_usage_account_id
+      - name: usage_account_id
         description: '{{ doc("line_item_usage_account_id") }}'
 
-      - name: line_item_usage_amount
+      - name: usage_amount
         description: '{{ doc("line_item_usage_amount") }}'
 
-      - name: line_item_usage_end_date
+      - name: usage_end_date
         description: '{{ doc("line_item_usage_end_date") }}'
 
-      - name: line_item_usage_start_date
+      - name: usage_start_date
         description: '{{ doc("line_item_usage_start_date") }}'
 
-      - name: line_item_usage_type
+      - name: usage_type
         description: '{{ doc("line_item_usage_type") }}'
 
-      - name: pricing_public_on_demand_cost
+      - name: public_on_demand_cost
         description: '{{ doc("pricing_public_on_demand_cost") }}'
 
-      - name: pricing_public_on_demand_rate
+      - name: public_on_demand_rate
         description: '{{ doc("pricing_public_on_demand_rate") }}'
 
-      - name: pricing_purchase_option
+      - name: purchase_option
         description: '{{ doc("pricing_purchase_option") }}'
 
       - name: pricing_term
@@ -118,25 +118,25 @@ models:
       - name: product_fee_description
         description: '{{ doc("product_fee_description") }}'
 
-      - name: product_from_location
+      - name: from_location
         description: '{{ doc("product_from_location") }}'
 
-      - name: product_from_location_type
+      - name: from_location_type
         description: '{{ doc("product_from_location_type") }}'
 
-      - name: product_from_region_code
+      - name: from_region_code
         description: '{{ doc("product_from_region_code") }}'
 
-      - name: product_instance_family
+      - name: instance_family
         description: '{{ doc("product_instance_family") }}'
 
-      - name: product_instance_type
+      - name: instance_type
         description: '{{ doc("product_instance_type") }}'
 
-      - name: product_location
+      - name: location
         description: '{{ doc("product_location") }}'
 
-      - name: product_location_type
+      - name: location_type
         description: '{{ doc("product_location_type") }}'
 
       - name: product_family
@@ -145,37 +145,37 @@ models:
       - name: product_name
         description: '{{ doc("product_product_name") }}'
 
-      - name: product_region_code
+      - name: region_code
         description: '{{ doc("product_region_code") }}'
 
       - name: product_service_code
         description: '{{ doc("product_servicecode") }}'
 
-      - name: product_to_location
+      - name: to_location
         description: '{{ doc("product_to_location") }}'
 
-      - name: product_to_location_type
+      - name: to_location_type
         description: '{{ doc("product_to_location_type") }}'
 
-      - name: product_to_region_code
+      - name: to_region_code
         description: '{{ doc("product_to_region_code") }}'
 
       - name: reservation_amortized_upfront_fee_for_billing_period
         description: '{{ doc("reservation_amortized_upfront_fee_for_billing_period") }}'
 
-      - name: reservation_normalized_units_per_reservation
+      - name: normalized_units_per_reservation
         description: '{{ doc("reservation_normalized_units_per_reservation") }}'
 
-      - name: reservation_number_of_reservations
+      - name: number_of_reservations
         description: '{{ doc("reservation_number_of_reservations") }}'
 
-      - name: reservation_total_reserved_normalized_units
+      - name: total_reserved_normalized_units
         description: '{{ doc("reservation_total_reserved_normalized_units") }}'
 
-      - name: reservation_total_reserved_units
+      - name: total_reserved_units
         description: '{{ doc("reservation_total_reserved_units") }}'
 
-      - name: reservation_units_per_reservation
+      - name: units_per_reservation
         description: '{{ doc("reservation_units_per_reservation") }}'
 
       - name: reservation_unused_amortized_upfront_fee_for_billing_period
@@ -202,7 +202,7 @@ models:
       - name: bill_payer_account_name
         description: '{{ doc("bill_payer_account_name") }}'
 
-      - name: line_item_usage_account_name
+      - name: usage_account_name
         description: '{{ doc("line_item_usage_account_name") }}'
 
       - name: reservation_recurring_fee_for_usage

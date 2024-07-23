@@ -34,11 +34,10 @@ final as (
         bill_billing_entity as billing_entity,
         bill_billing_period_start_date as billing_period_start_date,
         bill_billing_period_end_date as billing_period_end_date,
-        bill_invoice_id,
-        bill_invoicing_entity,
+        bill_invoice_id as invoice_id,
+        bill_invoicing_entity as invoicing_entity,
         bill_payer_account_id,
         bill_payer_account_name,
-
         line_item_blended_cost as blended_cost,
         line_item_blended_rate as blended_rate,
         line_item_currency_code as currency_code,
@@ -47,7 +46,7 @@ final as (
         line_item_availability_zone as availability_zone,
         line_item_line_item_description as line_item_description,
         line_item_line_item_type as line_item_type,
-        line_item_tax_type,
+        line_item_tax_type as tax_type,
         coalesce(line_item_operation, product_operation) as operation,
         line_item_product_code as product_code,
         line_item_unblended_cost as unblended_cost,
@@ -62,7 +61,7 @@ final as (
         pricing_public_on_demand_rate as public_on_demand_rate,
         pricing_purchase_option as purchase_option,
         pricing_term,
-        pricing_unit,
+        coalesce(pricing_unit, product_pricing_unit) as pricing_unit,
         product_fee_code, 
         product_fee_description,
 
@@ -118,5 +117,4 @@ final as (
 select *
 from final
 where is_latest_file_version
-{# or should this be a number_of_years integer value? #}
 and billing_period_start_date >= '{{ var("aws_cloud_cost_start_date", "1970-01-01") }}'

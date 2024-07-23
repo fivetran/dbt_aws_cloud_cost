@@ -20,6 +20,7 @@ fields as (
         pricing_unit,
         product_code,
         product_name,
+        {# Possible future feature: add variable to persist passthrough columns in this model #}
         count(distinct region_code) as count_regions,
         count(distinct usage_type) as count_instances,
         sum(coalesce(usage_amount, 0)) as usage_amount,

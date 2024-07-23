@@ -97,12 +97,12 @@ fields as (
         coalesce(source_report.bill_payer_account_name, billing_account_names.bill_payer_account_name) as bill_payer_account_name,
 
         {# Billing Details #}
-        bill_invoice_id,
-        bill_invoicing_entity,
+        invoice_id,
+        invoicing_entity,
         billing_entity,
         bill_type, 
         line_item_type,
-        line_item_tax_type,
+        tax_type,
 
         {# Pricing Details #}
         purchase_option,
@@ -207,12 +207,12 @@ final as (
         'usage_account_name',
         'bill_payer_account_id',
         'bill_payer_account_name',
-        'bill_invoice_id',
-        'bill_invoicing_entity',
+        'invoice_id',
+        'invoicing_entity',
         'billing_entity',
         'bill_type', 
         'line_item_type',
-        'line_item_tax_type',
+        'tax_type',
         'purchase_option',
         'pricing_term',
         'product_fee_code',

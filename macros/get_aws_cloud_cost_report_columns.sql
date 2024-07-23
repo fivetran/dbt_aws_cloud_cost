@@ -41,6 +41,7 @@
     {"name": "pricing_purchase_option", "datatype": dbt.type_string()},
     {"name": "pricing_term", "datatype": dbt.type_string()},
     {"name": "pricing_unit", "datatype": dbt.type_string()},
+    {"name": "product_pricing_unit", "datatype": dbt.type_string()},
     {"name": "product_fee_code", "datatype": dbt.type_string()},
     {"name": "product_fee_description", "datatype": dbt.type_string()},
     {"name": "product_from_location", "datatype": dbt.type_string()},
