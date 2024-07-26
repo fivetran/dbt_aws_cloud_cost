@@ -291,34 +291,7 @@ models:
 
       - name: total_public_on_demand_cost
         description: "{{ doc('pricing_public_on_demand_cost') }}"
-
-      - name: anniversary_blended_cost
-        description: Blended costs associated with `Anniversary` bill types. Part of `total_blended_cost`.
-
-      - name: anniversary_unblended_cost
-        description: Unlended costs associated with `Anniversary` bill types. Part of `total_unblended_cost`.
-
-      - name: anniversary_public_on_demand_cost
-        description: Public on-demand costs associated with `Anniversary` bill types. Part of `total_public_on_demand_cost`.
         
-      - name: purchase_blended_cost
-        description: Blended costs associated with `Purchase` bill types. Part of `total_blended_cost`.
-
-      - name: purchase_unblended_cost
-        description: Unlended costs associated with `Purchase` bill types. Part of `total_unblended_cost`.
-
-      - name: purchase_public_on_demand_cost
-        description: Public on-demand costs associated with `Purchase` bill types. Part of `total_public_on_demand_cost`.
-
-      - name: refund_blended_cost
-        description: Blended costs associated with `Refund` bill types. Part of `total_blended_cost`.
-
-      - name: refund_unblended_cost
-        description: Unlended costs associated with `Refund` bill types. Part of `total_unblended_cost`.
-
-      - name: refund_public_on_demand_cost
-        description: Public on-demand costs associated with `Refund` bill types. Part of `total_public_on_demand_cost`.
-
       - name: total_reserved_units
         description: '{{ doc("reservation_total_reserved_units") }}'
 

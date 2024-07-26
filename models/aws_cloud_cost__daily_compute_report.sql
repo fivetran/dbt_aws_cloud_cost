@@ -19,6 +19,8 @@ fields as (
         currency_code,
         usage_type,
 
+        {# Possible future feature: add variable to persist passthrough columns from daily_overview in this model #}
+
         count(distinct product_service_code) as count_products,
         count(distinct region_code) as count_regions,
         sum(coalesce(usage_amount, 0)) as usage_amount,
@@ -28,6 +30,12 @@ fields as (
         sum(coalesce(unblended_cost, 0)) as total_unblended_cost,
         sum(coalesce(public_on_demand_cost, 0)) as total_public_on_demand_cost
 
+        {# Possible future features: split and pivot costs by:
+            - pricing_term of usage: Reserved vs On Demand vs Spot
+            - bill_type: Anniversary vs Purchase vs Refund
+            - purchase_option: pay All Upfront, Partial Upfront, None Upfront
+        #}
+        
     from base 
     {{ dbt_utils.group_by(n=11) }}
 ),

@@ -20,7 +20,7 @@ fields as (
         product_code,
         product_name,
 
-        {# Possible future feature: add variable to persist passthrough columns in this model #}
+        {# Possible future feature: add variable to persist passthrough columns from daily_overview in this model #}
 
         count(distinct region_code) as count_regions,
         count(distinct usage_type) as count_instances,
@@ -31,11 +31,11 @@ fields as (
         sum(coalesce(unblended_cost, 0)) as total_unblended_cost,
         sum(coalesce(public_on_demand_cost, 0)) as total_public_on_demand_cost
 
-        {% for bill_type in ('anniversary', 'purchase', 'refund') %}
-        ,    sum(case when lower(bill_type) = '{{ bill_type }}' then blended_cost else 0 end) as {{ bill_type }}_blended_cost
-        ,    sum(case when lower(bill_type) = '{{ bill_type }}' then unblended_cost else 0 end) as {{ bill_type }}_unblended_cost
-        ,    sum(case when lower(bill_type) = '{{ bill_type }}' then public_on_demand_cost else 0 end) as {{ bill_type }}_public_on_demand_cost
-        {% endfor %}
+        {# Possible future features: split and pivot costs by:
+            - pricing_term of usage: Reserved vs On Demand vs Spot
+            - bill_type: Anniversary vs Purchase vs Refund
+            - purchase_option: pay All Upfront, Partial Upfront, None Upfront
+        #}
 
     from base 
     {{ dbt_utils.group_by(n=12) }}
