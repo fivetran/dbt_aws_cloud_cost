@@ -485,7 +485,7 @@ Aliased from `reservation_total_reserved_normalized_units` to `total_reserved_no
 {% enddocs %}
 
 {% docs reservation_total_reserved_units %}
-This field populates for both `Fee` and `RIFee` line items with distinct values.
+This field populates for both `Fee` and `RIFee` line items with distinct values. This should be used instead of `line_item_usage_amount` (renamed to `usage_amount` in staging) for size-flexible Reserved Instances.
 
 - Fee line items: The total number of units reserved, for the total quantity of leases purchased in your subscription for the entire term. This is calculated by multiplying the `NumberOfReservations` with `UnitsPerReservation`.
 - RIFee line items (monthly recurring costs): The total number of available units in your subscription, such as the total number of Amazon EC2 hours in a specific RI subscription.

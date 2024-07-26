@@ -17,14 +17,16 @@ fields as (
         bill_payer_account_id,
         bill_payer_account_name,
         currency_code,
-        pricing_unit,
         product_code,
         product_name,
+
         {# Possible future feature: add variable to persist passthrough columns in this model #}
+
         count(distinct region_code) as count_regions,
         count(distinct usage_type) as count_instances,
         sum(coalesce(usage_amount, 0)) as usage_amount,
         sum(coalesce(normalized_usage_amount, 0)) as normalized_usage_amount,
+        sum(coalesce(total_reserved_units, 0)) as total_reserved_units, -- use this for size-flexible Reserved Instances
         sum(coalesce(blended_cost, 0)) as total_blended_cost,
         sum(coalesce(unblended_cost, 0)) as total_unblended_cost,
         sum(coalesce(public_on_demand_cost, 0)) as total_public_on_demand_cost
@@ -36,14 +38,14 @@ fields as (
         {% endfor %}
 
     from base 
-    {{ dbt_utils.group_by(n=13) }}
+    {{ dbt_utils.group_by(n=12) }}
 ),
 
 final as (
 
     select
         *,
-        {# Grain is connector - report - account - usage day - billing month - currency + usage units - AWS product #}
+        {# Grain is connector - report - account - usage day - billing month - currency - AWS product #}
         {{ dbt_utils.generate_surrogate_key([
             'source_relation',
             'report',
@@ -55,7 +57,6 @@ final as (
             'bill_payer_account_id',
             'bill_payer_account_name',
             'currency_code',
-            'pricing_unit',
             'product_code',
             'product_name'
         ]) }} as unique_key
