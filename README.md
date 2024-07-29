@@ -14,7 +14,7 @@
 
 ## 📣 What does this dbt package do?
 
-This package models AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by [this ERD](https://fivetran.com/docs/applications/aws_cloud_cost#schemainformation).
+This package models AWS Cloud Cost data from [Fivetran's AWS Cloud & Usage Report connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by [this ERD](https://fivetran.com/docs/applications/aws_cloud_cost#schemainformation).
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
 <!--section="aws_cloud_cost_model"-->
@@ -24,8 +24,8 @@ The main focus of the package is to transform the core object tables into analyt
         - Column names are shortened for convenience and to avoid redundancy.
     - Adds column-level testing where applicable. For example, all primary keys are tested for uniqueness and non-null values.
     - Takes the latest export of each account's billing month report.
-    - Generates a comprehensive data dictionary of your AWS Cloud Cost data through the [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/).
-  - Creates the below analytics-ready end models.
+  - Generates a comprehensive data dictionary of your AWS Cloud Cost source and modeled data through the [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/).
+  - Creates analytics-ready end models for monitoring and investigating cost & usage of different AWS services across your organizations.
 
 > This package does not apply freshness tests.
 
@@ -36,8 +36,8 @@ The following table provides a detailed list of all models materialized within t
 | **model**                 | **description**                                                                                                    |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [aws_cloud_cost__daily_overview](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_overview.sql)  | Daily aggregation of the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS. Includes slew of commonly analyzed dimensions related to [billing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-bill.html), [pricing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-pricing.html), [line item](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-line-item.html) buckets, and [products](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-product.html). Contains both high-level cost and usage metrics, along with all metrics related to [reservations](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-reservation.html) and [savings plans](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-savings-plan.html). Also includes financial reporting fieds relating to invoices and billing periods. |
-| [aws_cloud_cost__daily_product_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_product_report.sql)  | Daily view of each account's use of and associated costs from individual AWS products for each billing period.   |
-| [aws_cloud_cost__daily_compute_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_compute_report.sql)  | Daily view of each account's use of and associated costs from different Amazon Elastic Compute Cloud (EC2) instances for each billing period.   |
+| [aws_cloud_cost__daily_product_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_product_report.sql)  | Daily view of each account's use of and associated costs from individual AWS products for each billing period. Built off of the daily overview model.  |
+| [aws_cloud_cost__daily_instance_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_instance_report.sql)  | Daily view of each account's use of and associated costs from different Amazon Elastic Compute Cloud (EC2) instances for each billing period. Built off of the daily overview model.  |
 <!--section-end-->
 
 ## 🎯 How do I use the dbt package?
@@ -108,7 +108,7 @@ vars:
 ### (Optional) Step 5: Additional configurations
 
 #### Limit Date Range
-Although the package transforms the latest version of each report, your AWS Cost & Usage Report data may still be quite large. In order to avoid unnecessary compute and storage costs, we have added a minimum (inclusive) **start date** variable that can be used to limit the data's date range.
+Although the package transforms the latest version of each report, your AWS Cost & Usage Report data may still be quite large. In order to avoid unnecessary compute and storage costs, we have added a minimum (INCLUSIVE) **start date** variable that can be used to limit the data's date range.
 
 By default, the package will look at data as far back as you have it. To adjust this, configure the following variable in your `dbt_project.yml` to be the first date you want *included*:
 ```yml
@@ -134,7 +134,7 @@ vars:
       alias: "new_name"
 ```
 
-> Please create an [issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues) if you'd like to see passthrough column support for the `aws_cloud_cost__daily_product_report` or `aws_cloud_cost__daily_compute_report` models.
+> Please create an [issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues) if you'd like to see passthrough column support for the `aws_cloud_cost__daily_product_report` or `aws_cloud_cost__daily_instance_report` models.
 
 #### Changing the Build Schema
 By default this package will build the AWS Cloud Cost staging models within a schema titled (<target_schema> + `_stg_aws_cloud_cost`) and the AWS Cloud Cost final models within a schema titled (<target_schema> + `_aws_cloud_cost`) in your target database. If this is not where you would like your modeled AWS Cloud Cost data to be written to, add the following configuration to your `dbt_project.yml` file:

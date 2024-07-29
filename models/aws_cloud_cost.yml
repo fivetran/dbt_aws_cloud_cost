@@ -295,7 +295,7 @@ models:
       - name: total_reserved_units
         description: '{{ doc("reservation_total_reserved_units") }}'
 
-  - name: aws_cloud_cost__daily_compute_report
+  - name: aws_cloud_cost__daily_instance_report
     description: Daily view of usage and cost metrics across your different Amazone Elastic Compute Cloud (EC2) instances. 
     columns:
       - name: unique_key
