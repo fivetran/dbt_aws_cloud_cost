@@ -86,7 +86,7 @@ fields as (
 
         {# Period Details #}
         cast({{ dbt.date_trunc('day', 'usage_start_date') }} as date) as usage_start_date,
-        cast({{ dbt.date_trunc('day', 'usage_end_date') }} as date) as usage_end_date, -- keep just in case
+        cast({{ dbt.date_trunc('day', 'usage_end_date') }} as date) as usage_end_date,
         billing_period_start_date,
         billing_period_end_date,
 

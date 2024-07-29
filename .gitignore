@@ -5,3 +5,8 @@ dbt_packages/
 .DS_Store
 env/
 package-lock.yml
+integration_tests/.DS_Store
+integration_tests/package-lock.yml
+integration_tests/target/
+integration_tests/logs/
+integration_tests/dbt_packages/
