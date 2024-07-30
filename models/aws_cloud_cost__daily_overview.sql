@@ -241,6 +241,7 @@ final as (
     ] 
 -%}
 
+{# Add passthrough columns to unique key in case they affect the grain. #}
 {% for field in var('aws_cloud_cost_report_pass_through_columns', [])  -%}
     {% set field_name = field.alias|default(field.name)|lower %}
     {% do composite_key.append(field_name) %}

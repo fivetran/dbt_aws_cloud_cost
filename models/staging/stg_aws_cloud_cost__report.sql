@@ -14,9 +14,13 @@ fields as (
                 staging_columns=get_aws_cloud_cost_report_columns()
             )
         }}
-        {{ fivetran_utils.source_relation(
-            union_schema_variable='aws_cloud_cost_union_schemas', 
-            union_database_variable='aws_cloud_cost_union_databases') 
+        
+        {{ aws_cloud_cost_source_relation(
+                connection_dictionary=var('aws_cloud_cost_sources'),
+                single_schema=var('aws_cloud_cost_schema', 'aws_cloud_cost'),
+                single_database=var('aws_cloud_cost_schema', target.database),
+                single_table_identifier=var("aws_cloud_cost_report_identifier", "aws_cost_report")
+            ) 
         }}
     from base
 ),

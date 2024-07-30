@@ -4,7 +4,9 @@ sources:
   - name: aws_cloud_cost
     database: '{% if target.type not in ("spark") %}{{ var("aws_cloud_cost_database", target.database) }}{% endif %}'
     schema: '{{ var("aws_cloud_cost_schema", "aws_cloud_cost") }}'
-    tables:
+    config:
+      enabled: "{{ var('aws_cloud_cost_sources', []) == [] }}"
+    tables: &aws_report
       - name: report
         identifier: '{{ var("aws_cloud_cost_report_identifier", "aws_cost_report") }}'
         description: '{{ doc("aws_cloud_cost_report") }}'

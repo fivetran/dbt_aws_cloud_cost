@@ -14,10 +14,9 @@
 
 ## 📣 What does this dbt package do?
 
-This package models AWS Cloud Cost data from [Fivetran's AWS Cloud & Usage Report connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by [this ERD](https://fivetran.com/docs/applications/aws_cloud_cost#schemainformation).
+This package models AWS Cloud Cost data from [Fivetran's AWS Cloud & Usage Report connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
-<!--section="aws_cloud_cost_model"-->
   - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost/models/?g_v=1) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
     - Names columns for consistency across all packages and for easier analysis:
         - Column names are shortened for convenience and to avoid redundancy.
@@ -33,9 +32,10 @@ The following table provides a detailed list of all models materialized within t
 
 | **model**                 | **description**                                                                                                    |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [aws_cloud_cost__daily_overview](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_overview.sql)  | Daily aggregation of the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS. Includes slew of commonly analyzed dimensions related to [billing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-bill.html), [pricing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-pricing.html), [line item](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-line-item.html) buckets, and [products](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-product.html). Contains both high-level cost and usage metrics, along with all metrics related to [reservations](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-reservation.html) and [savings plans](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-savings-plan.html). Also includes financial reporting fieds relating to invoices and billing periods. |
-| [aws_cloud_cost__daily_product_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_product_report.sql)  | Daily view of each account's use of and associated costs from individual AWS products for each billing period. Built off of the daily overview model.  |
-| [aws_cloud_cost__daily_instance_report](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/aws_cloud_cost__daily_instance_report.sql)  | Daily view of each account's use of and associated costs from different Amazon Elastic Compute Cloud (EC2) instances for each billing period. Built off of the daily overview model.  |
+| [aws_cloud_cost__daily_overview](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_overview)  | Daily aggregation of the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS. Includes slew of commonly analyzed dimensions related to [billing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-bill.html), [pricing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-pricing.html), [line item](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-line-item.html) buckets, and [products](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-product.html). Contains both high-level cost and usage metrics, along with all metrics related to [reservations](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-reservation.html) and [savings plans](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-savings-plan.html). Also includes financial reporting fieds relating to invoices and billing periods. |
+| [aws_cloud_cost__daily_product_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_product_report)  | Daily view of each account's use of and associated costs from individual AWS products for each billing period. Built off of the daily overview model.  |
+| [aws_cloud_cost__daily_instance_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_instance_report)  | Daily view of each account's use of and associated costs from different Amazon Elastic Compute Cloud (EC2) instances for each billing period. Built off of the daily overview model.  |
+
 <!--section-end-->
 
 ## 🎯 How do I use the dbt package?
@@ -131,6 +131,8 @@ vars:
     - name: "old_name"
       alias: "new_name"
 ```
+
+These fields will be included in the `aws_cloud_cost__daily_overview` model and part of its composite hashed `unique_key`.
 
 > Please create an [issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues) if you'd like to see passthrough column support for the `aws_cloud_cost__daily_product_report` or `aws_cloud_cost__daily_instance_report` models.
 

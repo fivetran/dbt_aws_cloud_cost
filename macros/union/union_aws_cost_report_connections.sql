@@ -1,4 +1,4 @@
-{% macro union_aws_cost_report_connections(connection_dictionary, single_schema, single_database, single_table_identifier) %}
+{% macro union_aws_cost_report_connections(connection_dictionary, single_table_name, single_source_name) %}
 
 {% if connection_dictionary %}
 {# For unioning #}
@@ -29,19 +29,15 @@
 
 {% else %}
 {# Not unioning #}
-    {%- set relation.value=adapter.get_relation(
-        database=single_database,
-        schema=single_schema,
-        identifier=single_table_identifier) -%}
 
-    {%- if relation.value is not none -%}
+    {%- if source(single_source_name, single_table_name) is not none -%}
         select
-            {{ dbt_utils.star(from=relation.value) }}
-        from {{ relation.value }} as {{ single_table_identifier }}_table
+            {{ dbt_utils.star(from=source(single_source_name, single_table_name)) }}
+        from {{ source(single_source_name, single_table_name) }} as source_table
     
     {% else %}
         {% if execute and not var('fivetran__remove_empty_table_warnings', false) -%}
-            {{ exceptions.warn("\n\nPlease be aware: The AWS Cost Report table was not found in your schema. The Fivetran Data Model will create a completely empty staging model as to not break downstream transformations. To turn off these warnings, set the `fivetran__remove_empty_table_warnings` variable to TRUE (see https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source for details).\n") }}
+            {{ exceptions.warn("\n\nPlease be aware: The AWS Cost Report table was not found in your schema. The Fivetran Data Model will create a completely empty staging model as to not break downstream transformations. To turn off these warnings, set the `fivetran__remove_empty_table_warnings` variable to TRUE.\n") }}
         {% endif -%}
         
         select 

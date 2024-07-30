@@ -1,8 +1,10 @@
-{%- macro fivetran_union_relations(relations, aliases=none, column_override=none, include=[], exclude=[], source_column_name='_dbt_source_relation', where=none) -%}
-    {{ return(adapter.dispatch('fivetran_union_relations', 'aws_cloud_cost')(relations, aliases, column_override, include, exclude, source_column_name, where)) }}
+{# Adapted from dbt_utils.union_relations() #}
+
+{%- macro aws_cloud_cost_union_relations(relations, aliases=none, column_override=none, include=[], exclude=[], source_column_name='_dbt_source_relation', where=none) -%}
+    {{ return(adapter.dispatch('aws_cloud_cost_union_relations', 'aws_cloud_cost')(relations, aliases, column_override, include, exclude, source_column_name, where)) }}
 {% endmacro %}
 
-{%- macro default__fivetran_union_relations(relations, aliases=none, column_override=none, include=[], exclude=[], source_column_name='_dbt_source_relation', where=none) -%}
+{%- macro default__aws_cloud_cost_union_relations(relations, aliases=none, column_override=none, include=[], exclude=[], source_column_name='_dbt_source_relation', where=none) -%}
 
     {%- if exclude and include -%}
         {{ exceptions.raise_compiler_error("Both an exclude and include list were provided to the `union` macro. Only one is allowed") }}
@@ -36,8 +38,8 @@
 
         {%- do relation_columns.update({relation: []}) -%}
 
-        {%- do dbt_utils._is_relation(relation, 'fivetran_union_relations') -%}
-        {%- do dbt_utils._is_ephemeral(relation, 'fivetran_union_relations') -%}
+        {%- do dbt_utils._is_relation(relation, 'aws_cloud_cost_union_relations') -%}
+        {%- do dbt_utils._is_ephemeral(relation, 'aws_cloud_cost_union_relations') -%}
         {%- set cols = adapter.get_columns_in_relation(relation) -%}
         {%- for col in cols -%}
 
