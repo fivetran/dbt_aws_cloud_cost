@@ -18,7 +18,11 @@ vars:
         table: aws_cost_report 
         name: unique_name_for_source # not going to add has_defined_sources for now
         # database is target by default
-
+      - schema: aws_cloud_cost_integration_tests_4
+        table: aws_cost_report 
+        name: unique_name_for_source_2 # not going to add has_defined_sources for now
+        # database is target by default
+        
 models:
   +schema: "aws_cloud_cost_{{ var('directed_schema','dev') }}"
 
