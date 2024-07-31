@@ -10,8 +10,14 @@ dispatch:
 
 vars:
   aws_cloud_cost:
-    aws_cloud_cost_schema: aws_cloud_cost_integration_tests_3
-    aws_cloud_cost_report_identifier: "aws_cost_report"
+    # aws_cloud_cost_schema: aws_cloud_cost_integration_tests_3
+    # aws_cloud_cost_report_identifier: "aws_cost_report"
+
+    aws_cloud_cost_sources:
+      - database: "{{ target.database }}"
+        schema: aws_cloud_cost_integration_tests_3
+        table: aws_cost_report 
+        name: unique_name_for_source # not going to add has_defined_sources for now
 
 models:
   +schema: "aws_cloud_cost_{{ var('directed_schema','dev') }}"

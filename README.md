@@ -84,7 +84,7 @@ vars:
 ```
 
 #### Option B: Union multiple connectors 👯
-If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model. To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary in your root `dbt_project.yml` file. For each source, provide the appropriate `database`, `schema`, and `table` name.
+If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model. To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary in your root `dbt_project.yml` file. For each source, provide a unique `name` and the appropriate `database`, `schema`, and `table`.
 
 ```yml
 # dbt_project.yml
@@ -95,10 +95,13 @@ vars:
       schema: source_schema_name
       table: source_table_name 
       name: unique_name_for_source
+
     - database: 'my-db-example'
       schema: aws_cost_schema_example
       table: report_table_example
       name: aws_cost_schema_source_1
+
+    # etc....
 ```
 
 ##### Recommended: Incorporate unioned sources into DAG

@@ -16,7 +16,7 @@ fields as (
         }}
         
         {{ aws_cloud_cost_source_relation(
-                connection_dictionary=var('aws_cloud_cost_sources'),
+                connection_dictionary=var('aws_cloud_cost_sources', []),
                 single_schema=var('aws_cloud_cost_schema', 'aws_cloud_cost'),
                 single_database=var('aws_cloud_cost_schema', target.database),
                 single_table_identifier=var("aws_cloud_cost_report_identifier", "aws_cost_report")
@@ -33,7 +33,10 @@ final as (
         {{ aws_cloud_cost_trim( dbt.concat([ dbt.split_part('_file', "'/'", 1), "'/'", dbt.split_part('_file', "'/'", 2) ]) ) }} as report,
         _line,
         _modified,
-        max(_modified) over(partition by bill_billing_period_start_date, source_relation) = _modified as is_latest_file_version,
+        (case when bill_billing_period_start_date is null then
+            max(_modified) over(partition by source_relation)
+        else
+            max(_modified) over(partition by bill_billing_period_start_date, source_relation) end) = _modified as is_latest_file_version,
         bill_bill_type as bill_type,
         bill_billing_entity as billing_entity,
         bill_billing_period_start_date as billing_period_start_date,
