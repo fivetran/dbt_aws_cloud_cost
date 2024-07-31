@@ -14,7 +14,7 @@
 
 ## 📣 What does this dbt package do?
 
-This package models AWS Cloud Cost data from [Fivetran's AWS Cloud & Usage Report connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
+This package models AWS Cloud Cost data from [Fivetran's AWS Cloud Cost connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
   - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost/models/?g_v=1) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
@@ -84,16 +84,18 @@ vars:
 ```
 
 #### Option B: Union multiple connectors 👯
-If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model. To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary in your root `dbt_project.yml` file. For each source, provide a unique `name` and the appropriate `database`, `schema`, and `table`.
+If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model.
+
+To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary-list in your root `dbt_project.yml` file. For each source, provide a unique `name` and the appropriate `database`, `schema`, and `table` for the dataset:
 
 ```yml
 # dbt_project.yml
 
 vars:
   aws_cloud_cost_sources:
-    - database: source_databse_name
+    - database: source_databse_name # default: target.database
       schema: source_schema_name
-      table: source_table_name 
+      table: source_table_name
       name: unique_name_for_source
 
     - database: 'my-db-example'
@@ -101,15 +103,15 @@ vars:
       table: report_table_example
       name: aws_cost_schema_source_1
 
-    # etc....
+    # include as many sources as you'd like
 ```
 
 ##### Recommended: Incorporate unioned sources into DAG
-Please be aware that the native `aws_cloud_cost` source connection set up in the package will not function when the union-feature is utilized. Although the data will be correctly transformed, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG).
+Please be aware that the native `aws_cloud_cost` source connection set up in the package will not function when the union-feature is utilized. Although the package will run correctly and the data will be correctly transformed, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG).
 
 To properly incorporate all of your AWS Cloud Cost connectors into your project's DAG:
 
-1. Define each source provided to the `aws_cloud_cost_sources` variable in a `.yml` file in your project. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions:
+1. Define each source provided to the `aws_cloud_cost_sources` variable in a `.yml` file in your project's `models/` pathway. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions:
 
 <details>
   <summary><i>Expand for source template</i></summary>
@@ -358,7 +360,9 @@ vars:
 ```
 
 #### Passing Through Additional Fields
-This package includes all source columns defined in the macros folder. You can add more columns to the `aws_cloud_cost__daily_overview` model using the `aws_cloud_cost_report_pass_through_columns` variable. This variables allow for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. Use the below format for declaring extra fields to include:
+This package includes all source columns defined in the macros folder. You can add more columns to the `aws_cloud_cost__daily_overview` model using the `aws_cloud_cost_report_pass_through_columns` variable. This variable allows for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. 
+
+Use the below format for declaring extra fields to include:
 
 ```yml
 # dbt_project.yml
