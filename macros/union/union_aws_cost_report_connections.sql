@@ -7,9 +7,9 @@
 
         {%- set relation=source(connection.name, connection.table) if var('has_defined_sources', false)
             else adapter.get_relation(
-                database=connection.database,
-                schema=connection.schema,
-                identifier=connection.table
+                database=connection.database if connection.database else target.database,
+                schema=connection.schema if connection.schema else single_source_name,
+                identifier=connection.table if connection.table else single_table_name
             ) 
         -%}
 
