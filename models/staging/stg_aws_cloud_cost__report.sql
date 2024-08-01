@@ -33,10 +33,7 @@ final as (
         {{ aws_cloud_cost_trim( dbt.concat([ dbt.split_part('_file', "'/'", 1), "'/'", dbt.split_part('_file', "'/'", 2) ]) ) }} as report,
         _line,
         _modified,
-        (case when bill_billing_period_start_date is null then
-            max(_modified) over(partition by source_relation)
-        else
-            max(_modified) over(partition by bill_billing_period_start_date, source_relation) end) = _modified as is_latest_file_version,
+        max(_modified) over (partition by bill_billing_period_start_date {{ ", source_relation" if var('aws_cloud_cost_sources', []) | length > 1 }}) = _modified as is_latest_file_version,
         bill_bill_type as bill_type,
         bill_billing_entity as billing_entity,
         bill_billing_period_start_date as billing_period_start_date,
