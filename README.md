@@ -14,7 +14,7 @@
 
 ## 📣 What does this dbt package do?
 
-This package models AWS Cloud Cost data from [Fivetran's AWS Cloud Cost connector](https://fivetran.com/docs/applications/aws_cloud_cost). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
+This package models AWS Cloud Cost data from [Fivetran's AWS Cost Report connector](https://fivetran.com/docs/connectors/applications/aws-cost-report). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
   - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost/models/?g_v=1) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
@@ -39,6 +39,8 @@ The following table provides a detailed list of all models materialized within t
 <!--section-end-->
 
 ## 🎯 How do I use the dbt package?
+
+> DISCLAIMER: This package transforms source data of potentially very high volumes. Please be aware of the size of your dataset(s) and take this into consideration when configuring the frequency with which you will orchestrate the package models. See [Step 4](https://github.com/fivetran/dbt_aws_cloud_cost?tab=readme-ov-file#optional-step-4-additional-configurations) for tools to mitigate compute and storage costs.
 
 ### Step 1: Prerequisites
 To use this dbt package, you must have the following:
@@ -376,6 +378,10 @@ By default, the package will look at data as far back as you have it. To adjust 
 vars:
     aws_cloud_cost_start_date: 'YYYY-MM-DD' # default value: '1970-01-01' 
 ```
+
+> Note for BigQuery users: This filter applies a full table scan and may therefore not actually mitigate your compute costs. We have applied [partitions](https://docs.getdbt.com/reference/resource-configs/bigquery-configs#partition-clause) to each end model, but you may want to consider applying pre-package transformations (partitions, filters, etc.) to streamline the amount of data processed by the package.
+>
+> Please create an [issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues) if you'd like to see support for incremental materializations.
 
 #### Passing Through Additional Fields
 This package includes all source columns defined in the macros folder. You can add more columns to the `aws_cloud_cost__daily_overview` model using the `aws_cloud_cost_report_pass_through_columns` variable. This variable allows for custom or otherwise not included fields to be included, aliased (`alias`), and casted (`transform_sql`) if desired (but not required). Datatype casting is configured via a sql snippet within the `transform_sql` key. You may add the desired sql while omitting the `as field_name` at the end and your custom pass-though fields will be casted accordingly. 

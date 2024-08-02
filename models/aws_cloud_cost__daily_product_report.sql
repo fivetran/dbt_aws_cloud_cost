@@ -1,3 +1,13 @@
+{{
+    config(
+        materialized='table',
+        partition_by = {'field': 'usage_date', 'data_type': 'date'}
+            if target.type not in ['spark', 'databricks'] else ['usage_date'],       
+        cluster_by = ['billing_period_start_date'],
+        unique_key='unique_key'
+    )
+}}
+
 with base as (
 
     select *
