@@ -1,5 +1,11 @@
 {% macro union_aws_cost_report_connections(connection_dictionary, single_table_name, single_source_name) %}
 
+{{ adapter.dispatch('union_aws_cost_report_connections', 'aws_cloud_cost') (connection_dictionary, single_table_name, single_source_name) }}
+
+{%- endmacro %}
+
+{% macro default__union_aws_cost_report_connections(connection_dictionary, single_table_name, single_source_name) %}
+
 {% if connection_dictionary %}
 {# For unioning #}
     {%- set relations = [] -%}
@@ -20,7 +26,7 @@
     {%- endfor -%}
 
     {%- if relations != [] -%}
-        {{ aws_cloud_cost_union_relations(relations) }}
+        {{ aws_cloud_cost.aws_cloud_cost_union_relations(relations) }}
     {%- else -%}
         {% if execute and not var('fivetran__remove_empty_table_warnings', false) -%}
         {{ exceptions.warn("\n\nPlease be aware: The " ~ single_source_name ~ "." ~ single_table_name ~ " table was not found in your schema(s). The Fivetran Data Model will create a completely empty staging model as to not break downstream transformations. To turn off these warnings, set the `fivetran__remove_empty_table_warnings` variable to TRUE (see https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#union_data-source for details).\n") }}
@@ -49,4 +55,4 @@
     {%- endif -%}
 {% endif -%}
 
-{% endmacro %}
+{%- endmacro %}

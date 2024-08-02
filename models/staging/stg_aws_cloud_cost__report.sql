@@ -15,7 +15,7 @@ fields as (
             )
         }}
         
-        {{ aws_cloud_cost_source_relation(
+        {{ aws_cloud_cost.aws_cloud_cost_source_relation(
                 connection_dictionary=var('aws_cloud_cost_sources', []),
                 single_schema=var('aws_cloud_cost_schema', 'aws_cloud_cost'),
                 single_database=var('aws_cloud_cost_schema', target.database),

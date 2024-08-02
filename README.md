@@ -86,7 +86,7 @@ vars:
 #### Option B: Union multiple connectors 👯
 If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model.
 
-To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary-list in your root `dbt_project.yml` file. For each source, provide a unique `name` and the appropriate `database`, `schema`, and `table` for the dataset:
+To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary-list in your root `dbt_project.yml` file. For each source, provide the appropriate `database`, `schema`, and `table` for each dataset:
 
 ```yml
 # dbt_project.yml
@@ -96,12 +96,10 @@ vars:
     - database: source_databse_name # default: target.database
       schema: source_schema_name
       table: source_table_name
-      name: unique_name_for_source
 
     - database: 'my-db-example'
       schema: aws_cost_schema_example
       table: report_table_example
-      name: aws_cost_schema_source_1
 
     # include as many sources as you'd like
 ```
@@ -111,7 +109,27 @@ Please be aware that the native `aws_cloud_cost` source connection set up in the
 
 To properly incorporate all of your AWS Cloud Cost connectors into your project's DAG:
 
-1. Define each source provided to the `aws_cloud_cost_sources` variable in a `.yml` file in your project's `models/` pathway. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions:
+1. For each source provided to the `aws_cloud_cost_sources` variable, you must now add a unique `name` attribute. This can be any name, so long as it is unique and matches the `source.name` you define in the following step.
+
+```yml
+# dbt_project.yml
+
+vars:
+  aws_cloud_cost_sources:
+    - database: source_databse_name
+      schema: source_schema_name
+      table: source_table_name
+      name: unique_source_name # NOW REQUIRED - can choose any name so long as it is unique
+
+    - database: 'my-db-example'
+      schema: aws_cost_schema_example
+      table: report_table_example
+      name: my_aws_cost_report_source
+
+    # include as many sources as you'd like
+```
+
+2. Define each source provided to the `aws_cloud_cost_sources` variable in a `.yml` file in your root project's `models/` pathway. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions:
 
 <details>
   <summary><i>Expand for source template</i></summary>
@@ -119,7 +137,7 @@ To properly incorporate all of your AWS Cloud Cost connectors into your project'
 ```yml
 # a .yml file in your root project
 sources:
-  - name: <name> # Must map onto name in var(aws_cloud_cost_sources)
+  - name: <name> # Must map onto name in var(aws_cloud_cost_sources) you added in the previous step
     schema: <schema_name> # Must map onto schema in var(aws_cloud_cost_sources)
     database: <database_name> # Must map onto database in var(aws_cloud_cost_sources)
     loader: fivetran
@@ -127,7 +145,7 @@ sources:
 
     tables:
       - name: <table_name_as_it_appears_in_warehouse> # Must map onto table in var(aws_cloud_cost_sources)
-        description: '{{ doc("aws_cloud_cost_report") }}'
+        description: '{{ doc("aws_cloud_cost_report") }}' # Your projecy will inherit docs blocks defined by this package
         columns: &aws_report_columns # Can use columns: *aws_report yaml anchor in subsequent sources
           - name: _file
             description: '{{ doc("_file") }}'
@@ -337,7 +355,7 @@ sources:
 
 </details>
 
-2. Set the `has_defined_sources` variable (scoped to the `aws_cloud_cost` package) to `True`, like such:
+3. Set the `has_defined_sources` variable (scoped to the `aws_cloud_cost` package) to `True`, like such:
 
 ```yml
 # dbt_project.yml
