@@ -17,7 +17,7 @@
 This package models AWS Cloud Cost data from [Fivetran's AWS Cost Report connector](https://fivetran.com/docs/connectors/applications/aws-cost-report). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
-  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost/models/?g_v=1) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
+  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.stg_aws_cloud_cost__report) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
     - Names columns for consistency across all packages and for easier analysis:
         - Column names are shortened for convenience and to avoid redundancy.
     - Takes the latest export of each account's billing month report.
