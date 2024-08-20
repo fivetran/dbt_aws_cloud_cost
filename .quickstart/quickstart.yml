@@ -1,0 +1,11 @@
+database_key: aws_cloud_cost_database
+schema_key: aws_cloud_cost_schema
+table_key: aws_cloud_cost_report_identifier
+
+dbt_versions: ">=1.3.0 <2.0.0"
+
+destination_configurations:
+  databricks:
+    dispatch:
+      - macro_namespace: dbt_utils
+        search_order: [ 'spark_utils', 'dbt_utils' ]
