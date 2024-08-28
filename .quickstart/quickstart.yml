@@ -8,3 +8,9 @@ destination_configurations:
     dispatch:
       - macro_namespace: dbt_utils
         search_order: [ 'spark_utils', 'dbt_utils' ]
+
+public_models: [
+  "aws_cloud_cost__daily_overview",
+  "aws_cloud_cost__daily_product_report",
+  "aws_cloud_cost__daily_instance_report"
+]
