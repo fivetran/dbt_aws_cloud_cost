@@ -14,10 +14,10 @@
 
 ### What does this dbt package do?
 
-This package models AWS Cloud Cost data from [Fivetran's AWS Cost Report connector](https://fivetran.com/docs/connectors/applications/aws-cost-report). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
+This package models AWS Cloud Cost data from [Fivetran's AWS Cost Report connector](https://fivetran.com/docs/connections/applications/aws-cost-report). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
 
 The main focus of the package is to transform the core object tables into analytics-ready models, including:
-  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.stg_aws_cloud_cost__report) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
+  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.stg_aws_cloud_cost__report) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connections/applications/aws-cost-report) for analysis by doing the following:
     - Names columns for consistency across all packages and for easier analysis:
         - Column names are shortened for convenience and to avoid redundancy.
     - Takes the latest export of each account's billing month report.
@@ -36,6 +36,8 @@ The following table provides a detailed list of all tables materialized within t
 | [aws_cloud_cost__daily_product_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_product_report)  | Daily view of each account's use of and associated costs from individual AWS products for each billing period. Built off of the daily overview model.  |
 | [aws_cloud_cost__daily_instance_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_instance_report)  | Daily view of each account's use of and associated costs from different Amazon Elastic Compute Cloud (EC2) instances for each billing period. Built off of the daily overview model.  |
 
+### Materialized Models
+Each Quickstart transformation job run materializes 5 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
 <!--section-end-->
 
 ### How do I use the dbt package?
@@ -45,7 +47,7 @@ The following table provides a detailed list of all tables materialized within t
 #### Step 1: Prerequisites
 To use this dbt package, you must have the following:
 
-- At least one Fivetran AWS Cloud Cost connector syncing data into your destination.
+- At least one Fivetran AWS Cloud Cost connection syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **Databricks**, or **PostgreSQL** destination.
 
 ##### Databricks dispatch configuration
@@ -67,7 +69,7 @@ packages:
 
 #### Step 3: Define database, schema, and table name variables
 
-##### Option A: Single connector
+##### Option A: Single connection
 By default, this package assumes your AWS Cost & Usage Report data lives in the following location:
 
 - Your `target.database`
@@ -85,8 +87,8 @@ vars:
     aws_cloud_cost_report_identifier: your_table_name # default: aws_cloud_cost_report
 ```
 
-##### Option B: Union multiple connectors
-If you have multiple AWS Cloud Cost connectors in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model.
+##### Option B: Union multiple connections
+If you have multiple AWS Cloud Cost connections in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model.
 
 To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary-list in your root `dbt_project.yml` file. For each source, provide the appropriate `database`, `schema`, and `table` for each dataset:
 
@@ -109,7 +111,7 @@ vars:
 ###### Recommended: Incorporate unioned sources into DAG
 > NOTE: The native `aws_cloud_cost` source connection set up in the package will not function when the union-feature is utilized. Although the package will run correctly and the data will be correctly transformed, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG).
 
-To properly incorporate all of your AWS Cloud Cost connectors into your project's DAG:
+To properly incorporate all of your AWS Cloud Cost connections into your project's DAG:
 
 1. For each source provided to the `aws_cloud_cost_sources` variable, you must now add a unique `name` attribute. This can be any name, so long as it is unique and matches the `source.name` you define in the following step.
 
