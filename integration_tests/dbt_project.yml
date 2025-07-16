@@ -23,6 +23,8 @@ models:
   +schema: "aws_cloud_cost_{{ var('directed_schema','dev') }}"
 
 seeds:
+  +docs:
+    show: False
   aws_cloud_cost_integration_tests:
     +quote_columns: "{{ true if target.type in ('redshift', 'postgres') else false }}"
     aws_cost_report:
@@ -32,3 +34,6 @@ seeds:
         bill_billing_period_start_date: timestamp
         bill_billing_period_end_date: timestamp
         bill_bill_type: "{{ 'string' if target.name in ['bigquery','spark', 'databricks'] else 'varchar' }}"
+flags:
+  send_anonymous_usage_stats: False
+  use_colors: True
