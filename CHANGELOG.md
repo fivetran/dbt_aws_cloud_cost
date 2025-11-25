@@ -1,3 +1,10 @@
+# dbt_aws_cloud_cost v0.2.0
+
+[PR #10](https://github.com/fivetran/dbt_aws_cloud_cost/pull/10) includes the following updates:
+
+## Features
+  - Increases the required dbt version upper limit to v3.0.0
+
 # dbt_aws_cloud_cost version.version
 
 ## Documentation
