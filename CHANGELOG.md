@@ -1,27 +1,13 @@
-[PR #9](https://github.com/fivetran/dbt_aws_cloud_cost/pull/9) includes the following updates:
 
-### Under the Hood - July 2025 Updates
+# dbt_aws_cloud_cost v0.2.0
 
-- Updated conditions in `.github/workflows/auto-release.yml`.
-- Added `.github/workflows/generate-docs.yml`.
-- Added `+docs: show: False` to `integration_tests/dbt_project.yml`.
-- Migrated `flags` (e.g., `send_anonymous_usage_stats`, `use_colors`) from `sample.profiles.yml` to `integration_tests/dbt_project.yml`.
-- Updated `maintainer_pull_request_template.md` with improved checklist.
-- Refreshed README tag block:
-  - Standardized Quickstart-compatible badge set
-  - Left-aligned and positioned below the H1 title.
-- Updated Python image version to `3.10.13` in `pipeline.yml`.
-- Added `CI_DATABRICKS_DBT_CATALOG` to:
-  - `.buildkite/hooks/pre-command` (as an export)
-  - `pipeline.yml` (under the `environment` block, after `CI_DATABRICKS_DBT_TOKEN`)
-- Added `certifi==2025.1.31` to `requirements.txt` (if missing).
-- Updated `.gitignore` to exclude additional DBT, Python, and system artifacts.
+[PR #10](https://github.com/fivetran/dbt_aws_cloud_cost/pull/10) includes the following updates:
 
-# dbt_aws_cloud_cost version.version
+## Features
+  - Increases the required dbt version upper limit to v3.0.0
 
-## Documentation
-- Added Quickstart model counts to README. ([#8](https://github.com/fivetran/dbt_aws_cloud_cost/pull/8))
-- Corrected references to connectors and connections in the README. ([#8](https://github.com/fivetran/dbt_aws_cloud_cost/pull/8))
+## Under the Hood
+  - Updates the README and integration tests architecture to align with other packages
 
 # dbt_aws_cloud_cost v0.1.0
 This is the initial release of the `aws_cloud_cost` dbt package!
