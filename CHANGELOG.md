@@ -1,3 +1,4 @@
+
 # dbt_aws_cloud_cost v0.2.0
 
 [PR #10](https://github.com/fivetran/dbt_aws_cloud_cost/pull/10) includes the following updates:
@@ -5,11 +6,8 @@
 ## Features
   - Increases the required dbt version upper limit to v3.0.0
 
-# dbt_aws_cloud_cost version.version
-
-## Documentation
-- Added Quickstart model counts to README. ([#8](https://github.com/fivetran/dbt_aws_cloud_cost/pull/8))
-- Corrected references to connectors and connections in the README. ([#8](https://github.com/fivetran/dbt_aws_cloud_cost/pull/8))
+## Under the Hood
+  - Updates the README and integration tests architecture to align with other packages
 
 # dbt_aws_cloud_cost v0.1.0
 This is the initial release of the `aws_cloud_cost` dbt package!
