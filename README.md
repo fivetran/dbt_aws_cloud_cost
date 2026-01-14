@@ -1,5 +1,5 @@
-
-# AWS Cloud Cost dbt Package ([Docs](https://fivetran.github.io/dbt_aws_cloud_cost/))
+<!--section="aws-cloud-cost_transformation_model"-->
+# Aws Cloud Cost dbt Package
 
 <p align="left">
     <a alt="License"
@@ -16,43 +16,70 @@
         <img src="https://img.shields.io/badge/Fivetran_Quickstart_Compatible%3F-yes-green.svg" /></a>
 </p>
 
-### What does this dbt package do?
+This dbt package transforms data from Fivetran's Aws Cloud Cost connector into analytics-ready tables.
 
-This package models AWS Cloud Cost data from [Fivetran's AWS Cost Report connector](https://fivetran.com/docs/connectors/applications/aws-cost-report). It uses data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html).
+## Resources
 
-The main focus of the package is to transform the core object tables into analytics-ready models, including:
-  - Materializes [AWS Cloud Cost staging tables](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.stg_aws_cloud_cost__report) which leverage data in the format described by the [AWS Cost & Usage Report](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2.html). These staging tables clean, test, and prepare your AWS Cloud Cost data from [Fivetran's connector](https://fivetran.com/docs/connectors/applications/aws-cost-report) for analysis by doing the following:
-    - Names columns for consistency across all packages and for easier analysis:
-        - Column names are shortened for convenience and to avoid redundancy.
-    - Takes the latest export of each account's billing month report.
-  - Creates analytics-ready end models for monitoring and investigating cost & usage of different AWS services across your organizations.
-  - Generates a comprehensive data dictionary of both your AWS Cloud Cost source and modeled data through the [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/).
+- Number of materialized models¹: 5
+- Connector documentation
+  - [Aws Cloud Cost connector documentation](https://fivetran.com/docs/connectors/applications/aws-cloud-cost)
+  - [Aws Cloud Cost ERD](https://fivetran.com/docs/connectors/applications/aws-cloud-cost#schemainformation)
+- dbt package documentation
+  - [GitHub repository](https://github.com/fivetran/dbt_aws_cloud_cost)
+  - [dbt Docs](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview)
+  - [DAG](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview?g_v=1)
+  - [Changelog](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/CHANGELOG.md)
+
+## What does this dbt package do?
+This package enables you to monitor and investigate cost & usage of different AWS services across your organizations. It creates enriched models with metrics focused on billing, pricing, line item buckets, products, reservations, and savings plans.
 
 > This package does not apply freshness tests.
 
-<!--section="aws_cloud_cost_transformation_model"-->
-The following table provides a detailed list of all tables materialized within this package by default.
-> TIP: See more details about these tables in the package's [dbt docs site](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview/aws_cloud_cost).
+### Output schema
+Final output tables are generated in the following target schema:
 
-| **Table**                 | **Description**                                                                                                    |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [aws_cloud_cost__daily_overview](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_overview)  | Daily aggregation of the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) exported from AWS. Includes slew of commonly analyzed dimensions related to [billing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-bill.html), [pricing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-pricing.html), [line item](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-line-item.html) buckets, and [products](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-product.html). Contains both high-level cost and usage metrics, along with all metrics related to [reservations](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-reservation.html) and [savings plans](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-savings-plan.html). Also includes financial reporting fieds relating to invoices and billing periods. |
-| [aws_cloud_cost__daily_product_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_product_report)  | Daily view of each account's use of and associated costs from individual AWS products for each billing period. Built off of the daily overview model.  |
-| [aws_cloud_cost__daily_instance_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_instance_report)  | Daily view of each account's use of and associated costs from different Amazon Elastic Compute Cloud (EC2) instances for each billing period. Built off of the daily overview model.  |
+```
+<your_database>.<connector/schema_name>_aws_cloud_cost
+```
 
-### Materialized Models
-Each Quickstart transformation job run materializes 5 models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
-<!--section-end-->
+### Final output tables
 
-### How do I use the dbt package?
+By default, this package materializes the following final tables:
 
-> DISCLAIMER: This package transforms source data of potentially very high volumes. Please be aware of the size of your dataset(s) and take this into consideration when configuring the frequency with which you will orchestrate the package models. See [Step 4](https://github.com/fivetran/dbt_aws_cloud_cost?tab=readme-ov-file#optional-step-4-additional-configurations) for tools to mitigate compute and storage costs.
+| Table | Description |
+| :---- | :---- |
+| [aws_cloud_cost__daily_overview](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_overview) | Provides a comprehensive daily view of AWS costs and usage across all services, accounts, and billing dimensions from the [Standard](https://docs.aws.amazon.com/cur/latest/userguide/dataexports-create-standard.html) Cost & Usage Report (2.0) to monitor spending patterns, optimize costs, and track [reservations](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-reservation.html) and [savings plans](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-savings-plan.html). <br></br>**Example Analytics Questions:**<ul><li>What are our daily AWS costs by [billing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-bill.html) account, [product](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-product.html), or region?</li><li>How much are we saving through reservations and savings plans compared to on-demand pricing?</li><li>Which [line item](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-line-item.html) buckets or [pricing](https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-cur2-pricing.html) categories are driving the biggest spending increases?</li></ul>|
+| [aws_cloud_cost__daily_product_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_product_report) | Breaks down daily AWS spending by individual product and service for each account to identify which services consume the most budget and where optimization opportunities exist. <br></br>**Example Analytics Questions:**<ul><li>Which AWS products or services drive the highest costs by account?</li><li>How are product-specific costs trending day-over-day or month-over-month?</li><li>Where should we focus cost optimization efforts based on product spending patterns?</li></ul>|
+| [aws_cloud_cost__daily_instance_report](https://fivetran.github.io/dbt_aws_cloud_cost/#!/model/model.aws_cloud_cost.aws_cloud_cost__daily_instance_report) | Analyzes daily costs and usage for EC2 instances across all accounts to optimize compute spending and identify underutilized or oversized instances. <br></br>**Example Analytics Questions:**<ul><li>Which EC2 instance types generate the highest daily costs by account?</li><li>How does EC2 instance usage and spending vary across different accounts or environments?</li><li>Are there opportunities to right-size instances based on usage patterns?</li></ul>|
 
-#### Step 1: Prerequisites
+¹ Each Quickstart transformation job run materializes these models if all components of this data model are enabled. This count includes all staging, intermediate, and final models materialized as `view`, `table`, or `incremental`.
+
+---
+
+## Prerequisites
 To use this dbt package, you must have the following:
 
-- At least one Fivetran AWS Cloud Cost connection syncing data into your destination.
+- At least one Fivetran Aws Cloud Cost connection syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **Databricks**, or **PostgreSQL** destination.
+
+## How do I use the dbt package?
+You can either add this dbt package in the Fivetran dashboard or import it into your dbt project:
+
+- To add the package in the Fivetran dashboard, follow our [Quickstart guide](https://fivetran.com/docs/transformations/dbt).
+- To add the package to your dbt project, follow the setup instructions in the dbt package's [README file](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/README.md#how-do-i-use-the-dbt-package) to use this package.
+
+> DISCLAIMER: This package transforms source data of potentially very high volumes. Please be aware of the size of your dataset(s) and take this into consideration when configuring the frequency with which you will orchestrate the package models. See [Additional configurations](https://github.com/fivetran/dbt_aws_cloud_cost?tab=readme-ov-file#optional-step-4-additional-configurations) for tools to mitigate compute and storage costs.
+
+<!--section-end-->
+
+### Install the package
+Include the following AWS Cloud Cost package version in your `packages.yml` file:
+> TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
+```yml
+packages:
+  - package: fivetran/aws_cloud_cost
+    version: [">=0.3.0", "<0.4.0"] # we recommend using ranges to capture non-breaking changes automatically
+```
 
 ##### Databricks dispatch configuration
 If you are using a Databricks destination with this package, you must add the following (or a variation of the following) dispatch configuration within your `dbt_project.yml`. This is required in order for the package to accurately search for macros within the `dbt-labs/spark_utils` then the `dbt-labs/dbt_utils` packages respectively.
@@ -62,16 +89,7 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 ```
 
-#### Step 2: Install the package
-Include the following AWS Cloud Cost package version in your `packages.yml` file:
-> TIP: Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instructions or [read the dbt docs](https://docs.getdbt.com/docs/package-management) for more information on installing packages.
-```yml
-packages:
-  - package: fivetran/aws_cloud_cost
-    version: [">=0.2.0", "<0.3.0"] # we recommend using ranges to capture non-breaking changes automatically
-```
-
-#### Step 3: Define database, schema, and table name variables
+### Define database, schema, and table name variables
 
 ##### Option A: Single connection
 By default, this package assumes your AWS Cost & Usage Report data lives in the following location:
@@ -372,7 +390,7 @@ vars:
     has_defined_sources: true
 ```
 
-#### (Optional) Step 4: Additional configurations
+### (Optional) Additional configurations
 
 ##### Limit Date Range
 Although the package transforms the latest version of each report, your AWS Cost & Usage Report data may still be quite large. In order to avoid unnecessary compute and storage costs, we have added a minimum (INCLUSIVE) **start date** variable that can be used to limit the data's date range.
@@ -425,7 +443,7 @@ models:
 ```
 </details>
 
-#### (Optional) Step 5: Orchestrate your models with Fivetran Transformations for dbt Core™
+### (Optional) Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>
 <br>
 
@@ -445,15 +463,19 @@ packages:
       version: [">=1.0.0", "<2.0.0"]
 ```
 
-### How is this package maintained and can I contribute?
-#### Package Maintenance
-The Fivetran team maintaining this package _only_ maintains the latest version of the package. We highly recommend you stay consistent with the [latest version](https://hub.getdbt.com/fivetran/aws_cloud_cost/latest/) of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
+<!--section="aws-cloud-cost_maintenance"-->
+## How is this package maintained and can I contribute?
 
-#### Contributions
+### Package Maintenance
+The Fivetran team maintaining this package only maintains the [latest version](https://hub.getdbt.com/fivetran/aws_cloud_cost/latest/) of the package. We highly recommend you stay consistent with the latest version of the package and refer to the [CHANGELOG](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/CHANGELOG.md) and release notes for more information on changes across versions.
+
+### Contributions
 A small team of analytics engineers at Fivetran develops these dbt packages. However, the packages are made better by community contributions.
 
-We highly encourage and welcome contributions to this package. Check out [this dbt Discourse article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) on the best workflow for contributing to a package.
+We highly encourage and welcome contributions to this package. Learn how to contribute to a package in dbt's [Contributing to an external dbt package article](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657).
 
-### Are there any resources available?
+#<!--section-end-->
+
+## Are there any resources available?
 - If you have questions or want to reach out for help, see the [GitHub Issue](https://github.com/fivetran/dbt_aws_cloud_cost/issues/new/choose) section to find the right avenue of support for you.
 - If you would like to provide feedback to the dbt package team at Fivetran or would like to request a new dbt package, fill out our [Feedback Form](https://www.surveymonkey.com/r/DQ7K7WW).

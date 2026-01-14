@@ -14,3 +14,16 @@ public_models: [
   "aws_cloud_cost__daily_product_report",
   "aws_cloud_cost__daily_instance_report"
 ]
+
+supported_vars:
+  aws_cloud_cost_start_date:
+    type: string
+    value: "1970-01-01"
+    description: "Start date for the window of data to transform (YYYY-MM-DD format)"
+    display_name: "Date Range Start"
+
+  aws_cloud_cost_report_pass_through_columns:
+    type: dictionary
+    description: "Additional Cost & Usage Report columns to include in `aws_cloud_cost__daily_overview`"
+    display_name: "Additional Cost & Usage Report Columns"
+

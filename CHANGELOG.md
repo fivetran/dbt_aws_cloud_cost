@@ -1,3 +1,15 @@
+# dbt_aws_cloud_cost v0.3.0
+
+[PR #11](https://github.com/fivetran/dbt_aws_cloud_cost/pull/11) includes the following updates:
+
+## Documentation
+- Updates README with standardized Fivetran formatting
+
+## Under the Hood
+- In the `.quickstart.yml` file:
+  - Adds `table_variables` for relevant sources to prevent missing sources from blocking downstream Quickstart models.
+  - Adds `supported_vars` for Quickstart UI customization,
+
 
 # dbt_aws_cloud_cost v0.2.0
 
