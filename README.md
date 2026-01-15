@@ -22,8 +22,8 @@ This dbt package transforms data from Fivetran's Aws Cloud Cost connector into a
 
 - Number of materialized models¹: 5
 - Connector documentation
-  - [Aws Cloud Cost connector documentation](https://fivetran.com/docs/connectors/applications/aws-cloud-cost)
-  - [Aws Cloud Cost ERD](https://fivetran.com/docs/connectors/applications/aws-cloud-cost#schemainformation)
+  - [AWS Cloud Cost connector documentation](https://fivetran.com/docs/connectors/applications/aws-cost-report)
+  - [AWS Cost & Usage Report](https://fivetran.com/docs/connectors/applications/aws-cost-report#syncoverview)
 - dbt package documentation
   - [GitHub repository](https://github.com/fivetran/dbt_aws_cloud_cost)
   - [dbt Docs](https://fivetran.github.io/dbt_aws_cloud_cost/#!/overview)
@@ -33,7 +33,6 @@ This dbt package transforms data from Fivetran's Aws Cloud Cost connector into a
 ## What does this dbt package do?
 This package enables you to monitor and investigate cost & usage of different AWS services across your organizations. It creates enriched models with metrics focused on billing, pricing, line item buckets, products, reservations, and savings plans.
 
-> This package does not apply freshness tests.
 
 ### Output schema
 Final output tables are generated in the following target schema:
@@ -59,16 +58,16 @@ By default, this package materializes the following final tables:
 ## Prerequisites
 To use this dbt package, you must have the following:
 
-- At least one Fivetran Aws Cloud Cost connection syncing data into your destination.
+- At least one Fivetran AWS Cloud Cost connection syncing data into your destination.
 - A **BigQuery**, **Snowflake**, **Redshift**, **Databricks**, or **PostgreSQL** destination.
 
 ## How do I use the dbt package?
 You can either add this dbt package in the Fivetran dashboard or import it into your dbt project:
 
-- To add the package in the Fivetran dashboard, follow our [Quickstart guide](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore).
+- To add the package in the Fivetran dashboard, follow our [Quickstart guide](https://fivetran.com/docs/transformations/data-models/quickstart-management#quickstartmanagement).
 - To add the package to your dbt project, follow the setup instructions in the dbt package's [README file](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/README.md#how-do-i-use-the-dbt-package) to use this package.
 
-> DISCLAIMER: This package transforms source data of potentially very high volumes. Please be aware of the size of your dataset(s) and take this into consideration when configuring the frequency with which you will orchestrate the package models. See [Additional configurations](https://github.com/fivetran/dbt_aws_cloud_cost?tab=readme-ov-file#optional-step-4-additional-configurations) for tools to mitigate compute and storage costs.
+> DISCLAIMER: This package transforms source data of potentially very high volumes. Please be aware of the size of your dataset(s) and take this into consideration when configuring the frequency with which you will orchestrate the package models. See [Additional configurations](https://github.com/fivetran/dbt_aws_cloud_cost?tab=readme-ov-file#optional-additional-configurations) for tools to mitigate compute and storage costs.
 
 <!--section-end-->
 
