@@ -1,3 +1,10 @@
+# dbt_aws_cloud_cost v0.3.1
+
+[PR #12](https://github.com/fivetran/dbt_aws_cloud_cost/pull/12) includes the following updates:
+
+## Under the Hood
+- Adjusts the data type of `aws_cloud_cost_start_date` in the `quickstart.yml` from string to date.
+
 # dbt_aws_cloud_cost v0.3.0
 
 [PR #11](https://github.com/fivetran/dbt_aws_cloud_cost/pull/11) includes the following updates:
