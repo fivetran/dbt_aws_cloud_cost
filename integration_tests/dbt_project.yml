@@ -20,6 +20,9 @@ vars:
         # database is target by default
 
 models:
+  +persist_docs:
+    relation: true
+    columns: true'
   +schema: "aws_cloud_cost_{{ var('directed_schema','dev') }}"
 
 seeds:
