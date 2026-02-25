@@ -151,23 +151,23 @@ Aliased from `line_item_line_item_description` to `line_item_description` in the
 {% enddocs %}
 
 {% docs line_item_line_item_type %}
-The type of charge covered by this line item. The possible types are as follows:
+Type of charge for the line item:
 
-- `BundledDiscount`: A usage-based discount that provides free or discounted usage of a service or feature based on the usage of another service or feature.
-- `Credit`: Any credits that AWS applied to your bill. See the Description column for details. AWS might update reports after they've been finalized, if AWS applies a credit to your account for the month after finalizing your bill.
-- `Discount`: Any discounts that AWS applied to your usage. This specific line item name may vary and require parsing based on the discount. For more information, refer to the `line_item_line_item_description` column.
-- `DiscountedUsage`: The rate of any instances for which you had Reserved Instance (RI) benefits. Line items with an RI discount have a `line_item_line_item_type` of `DiscountedUsage`.
-- `Fee`: Any upfront annual fee that you paid for subscriptions. For example, the upfront fee that you paid for an All Upfront RI or a Partial Upfront RI.
-- `Refund`: The negative charges that AWS refunded money for. Review the Description column for details. AWS might update reports after they've been finalized, if AWS applies a refund to your account for the month after finalizing your bill.
-- `RIFee`: The monthly recurring fee for subscriptions. For example, the recurring fee for Partial Upfront RIs, No Upfront RIs, and All Upfronts that you pay every month. Although the RIFee might be $0 for all upfront reservations, this line is still populated for those reservation types to provide other columns such as reservation/AmortizedUpfrontFeeForBillingPeriod and reservation/ReservationARN.
-- `Tax`: Any taxes that AWS applied to your bill. For example, VAT or US sales tax. The exact type of tax will be reflected in the `line_item_tax_type` field.
-- `Usage`: Any usage that is charged at On-Demand Instance rates.
-- `SavingsPlanUpfrontFee`: Any one-time upfront fee from your purchase of an All Upfront or Partial Upfront Savings Plan.
-- `SavingsPlanRecurringFee`: Any recurring hourly charges that correspond with your No Upfront or Partial Upfront Savings Plan. The Savings Plan recurring fee is initially added to your bill on the day that you purchase a No Upfront or Partial Upfront Savings Plan. After the initial purchase, AWS adds the recurring fee to the first day of each billing period thereafter.
-- `SavingsPlanCoveredUsage`: Any On-Demand cost that is covered by your Savings Plan. Savings Plan covered usage line items are offset by the corresponding Savings Plan negation items.
-- `SavingsPlanNegation` – Any offset cost through your Savings Plan benefit that’s associated with the corresponding Savings Plan covered usage item.
+- `BundledDiscount`: Usage-based discount tied to another service’s usage.
+- `Credit`: Credit applied to your bill.
+- `Discount`: Discount applied to usage.
+- `DiscountedUsage`: Usage billed with Reserved Instance (RI) benefits.
+- `Fee`: Upfront subscription fee (e.g., All/Partial Upfront RI).
+- `Refund`: Refunded charges.
+- `RIFee`: Monthly RI subscription fee (may be $0 for All Upfront; includes reservation metadata).
+- `Tax`: Taxes applied (see `line_item_tax_type`).
+- `Usage`: On-Demand usage charges.
+- `SavingsPlanUpfrontFee`: One-time upfront Savings Plan fee.
+- `SavingsPlanRecurringFee`: Recurring Savings Plan charge.
+- `SavingsPlanCoveredUsage`: Usage covered by a Savings Plan.
+- `SavingsPlanNegation`: Offset for Savings Plan covered usage.
 
-Aliased from `line_item_line_item_type` to `line_item_type` in the staging layer.
+Aliased from `line_item_line_item_type` to `line_item_type` in staging.
 {% enddocs %}
 
 {% docs line_item_normalization_factor %}
