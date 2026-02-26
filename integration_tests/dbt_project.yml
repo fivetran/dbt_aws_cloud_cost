@@ -22,7 +22,7 @@ vars:
 models:
   +persist_docs:
     relation: true
-    columns: true
+    columns: "{{ false if target.type in ('databricks') else true }}"
   +schema: "aws_cloud_cost_{{ var('directed_schema','dev') }}"
 
 seeds:
