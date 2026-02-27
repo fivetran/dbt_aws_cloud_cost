@@ -1,3 +1,6 @@
+## Documentation
+- Shortens the documentation of the `line_item_line_item_type` field to ensure the description can persist to the destination without error.
+
 # dbt_aws_cloud_cost v0.3.1
 
 [PR #12](https://github.com/fivetran/dbt_aws_cloud_cost/pull/12) includes the following updates:
