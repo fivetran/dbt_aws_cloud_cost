@@ -151,7 +151,7 @@ Aliased from `line_item_line_item_description` to `line_item_description` in the
 {% enddocs %}
 
 {% docs line_item_line_item_type %}
-Type of charge for the line item of the following possible types:
+Type of charge for the line item:
 
 - `BundledDiscount`: Usage-based discount tied to another service’s usage.
 - `Credit`: Credit applied to your bill by AWS.

@@ -1,3 +1,14 @@
+# dbt_aws_cloud_cost v0.3.2
+
+[PR #14](https://github.com/fivetran/dbt_aws_cloud_cost/pull/14) includes the following updates:
+
+## Documentation
+- Updates column descriptions for `line_item_line_item_type` and related fields to be more concise.
+- Updates README to remove badges and replace with plain-text dbt Core version compatibility.
+
+## Under the Hood
+- Adds a `persist_docs` conditional to integration tests to enable relation and column documentation persistence, except for Databricks targets.
+
 # dbt_aws_cloud_cost v0.3.1
 
 [PR #12](https://github.com/fivetran/dbt_aws_cloud_cost/pull/12) includes the following updates:
