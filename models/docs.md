@@ -151,15 +151,15 @@ Aliased from `line_item_line_item_description` to `line_item_description` in the
 {% enddocs %}
 
 {% docs line_item_line_item_type %}
-Type of charge for the line item:
+Type of charge for the line item of the following possible types:
 
 - `BundledDiscount`: Usage-based discount tied to another service’s usage.
-- `Credit`: Credit applied to your bill.
-- `Discount`: Discount applied to usage.
+- `Credit`: Credit applied to your bill by AWS.
+- `Discount`: Discount applied to usage by AWS. Refer to`line_item_line_item_description` for more information.
 - `DiscountedUsage`: Usage billed with Reserved Instance (RI) benefits.
-- `Fee`: Upfront subscription fee (e.g., All/Partial Upfront RI).
-- `Refund`: Refunded charges.
-- `RIFee`: Monthly RI subscription fee (may be $0 for All Upfront; includes reservation metadata).
+- `Fee`: Upfront annual subscription fee paid (e.g., All/Partial Upfront RI).
+- `Refund`: Refunded charges. Review the Description column for details.
+- `RIFee`: Monthly recurring RI subscription fee (may be $0 for All Upfront; includes reservation metadata).
 - `Tax`: Taxes applied (see `line_item_tax_type`).
 - `Usage`: On-Demand usage charges.
 - `SavingsPlanUpfrontFee`: One-time upfront Savings Plan fee.
