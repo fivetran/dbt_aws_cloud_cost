@@ -1,7 +1,7 @@
 <!--section="aws-cloud-cost_transformation_model"-->
-# Aws Cloud Cost dbt Package
+# AWS Cloud Cost dbt Package
 
-This dbt package transforms data from Fivetran's Aws Cloud Cost connector into analytics-ready tables.
+This dbt package transforms data from Fivetran's AWS Cloud Cost connector into analytics-ready tables.
 
 ## Resources
 
@@ -64,7 +64,7 @@ Include the following AWS Cloud Cost package version in your `packages.yml` file
 ```yml
 packages:
   - package: fivetran/aws_cloud_cost
-    version: [">=0.3.0", "<0.4.0"] # we recommend using ranges to capture non-breaking changes automatically
+    version: [">=0.4.0", "<0.5.0"] # we recommend using ranges to capture non-breaking changes automatically
 ```
 
 ##### Databricks dispatch configuration
@@ -75,306 +75,39 @@ dispatch:
     search_order: ['spark_utils', 'dbt_utils']
 ```
 
-### Define database, schema, and table name variables
-
-##### Option A: Single connection
-By default, this package assumes your AWS Cost & Usage Report data lives in the following location:
-
-- Your `target.database`
-- A schema called `aws_cloud_cost`
-- A table called `aws_cloud_cost_report`
-
-In the very likely case that your AWS Cloud Cost source data lives someplace else (for example, if your AWS Cloud Cost schema is named `aws_cloud_cost_fivetran` or your table is called `aws_billing`), add the following configuration to your root `dbt_project.yml` file:
+### Define database and schema variables
+#### Option A: Single connection
+By default, this package runs using your destination and the `aws_cloud_cost` schema. If this is not where your AWS Cloud Cost data is (for example, if your AWS Cloud Cost schema is named `aws_cloud_cost_fivetran`), add the following configuration to your root `dbt_project.yml` file:
 
 ```yml
-# dbt_project.yml
-
 vars:
-    aws_cloud_cost_database: your_database_name # default: target.database
-    aws_cloud_cost_schema: your_schema_name # default: aws_cloud_cost
-    aws_cloud_cost_report_identifier: your_table_name # default: aws_cloud_cost_report
+    aws_cloud_cost_database: your_destination_name
+    aws_cloud_cost_schema: your_schema_name
 ```
 
-##### Option B: Union multiple connections
-If you have multiple AWS Cloud Cost connections in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. The package will union all of the data together and pass the unioned table into the transformations. You will be able to see which source it came from (the `database.schema.table`, NOT the source `name`) in the `source_relation` column of each model.
+#### Option B: Union multiple connections
+If you have multiple AWS Cloud Cost connections in Fivetran and would like to use this package on all of them simultaneously, we have provided functionality to do so. For each source table, the package will union all of the data together and pass the unioned table into the transformations. The `source_relation` column in each model indicates the origin of each record.
 
-To use this functionality, you will need to configure the `aws_cloud_cost_sources` dictionary-list in your root `dbt_project.yml` file. For each source, provide the appropriate `database`, `schema`, and `table` for each dataset:
+To use this functionality, you will need to set the `aws_cloud_cost_sources` variable in your root `dbt_project.yml` file:
 
 ```yml
 # dbt_project.yml
 
-vars:
-  aws_cloud_cost_sources:
-    - database: source_databse_name # default: target.database
-      schema: source_schema_name
-      table: source_table_name
-
-    - database: 'my-db-example'
-      schema: aws_cost_schema_example
-      table: report_table_example
-
-    # include as many sources as you'd like
-```
-
-###### Recommended: Incorporate unioned sources into DAG
-> NOTE: The native `aws_cloud_cost` source connection set up in the package will not function when the union-feature is utilized. Although the package will run correctly and the data will be correctly transformed, you will not observe the sources linked to the package models in the Directed Acyclic Graph (DAG).
-
-To properly incorporate all of your AWS Cloud Cost connections into your project's DAG:
-
-1. For each source provided to the `aws_cloud_cost_sources` variable, you must now add a unique `name` attribute. This can be any name, so long as it is unique and matches the `source.name` you define in the following step.
-
-```yml
-# dbt_project.yml
-
-vars:
-  aws_cloud_cost_sources:
-    - database: source_databse_name
-      schema: source_schema_name
-      table: source_table_name
-      name: unique_source_name # NOW REQUIRED - can choose any name so long as it is unique
-
-    - database: 'my-db-example'
-      schema: aws_cost_schema_example
-      table: report_table_example
-      name: my_aws_cost_report_source
-
-    # include as many sources as you'd like
-```
-
-2. Define each source provided to the `aws_cloud_cost_sources` variable in a `.yml` file in your root project's `models/` pathway. Utilize the following template for the `source`-level configurations, and, **most importantly**, copy and paste the table and column-level definitions:
-
-<details>
-<summary><i>Expand for source template</i></summary>
-
-```yml
-# a .yml file in your root project
-sources:
-  - name: <name> # Must map onto name in var(aws_cloud_cost_sources) you added in the previous step
-    schema: <schema_name> # Must map onto schema in var(aws_cloud_cost_sources)
-    database: <database_name> # Must map onto database in var(aws_cloud_cost_sources)
-    loader: fivetran
-    loaded_at_field: _fivetran_synced
-
-    tables:
-      - name: <table_name_as_it_appears_in_warehouse> # Must map onto table in var(aws_cloud_cost_sources)
-        description: '{{ doc("aws_cloud_cost_report") }}' # Your projecy will inherit docs blocks defined by this package
-        columns: &aws_report_columns # Can use columns: *aws_report yaml anchor in subsequent sources
-          - name: _file
-            description: '{{ doc("_file") }}'
-          - name: _line
-            description: '{{ doc("_line") }}'
-          - name: _fivetran_synced
-            description: '{{ doc("_fivetran_synced") }}'
-          - name: _modified
-            description: '{{ doc("_modified") }}'
-          - name: bill_bill_type
-            description: '{{ doc("bill_bill_type") }}'
-          - name: bill_billing_entity
-            description: '{{ doc("bill_billing_entity") }}'
-          - name: bill_billing_period_end_date
-            description: '{{ doc("bill_billing_period_end_date") }}'
-          - name: bill_billing_period_start_date
-            description: '{{ doc("bill_billing_period_start_date") }}'
-          - name: bill_invoice_id
-            description: '{{ doc("bill_invoice_id") }}'
-          - name: bill_invoicing_entity
-            description: '{{ doc("bill_invoicing_entity") }}'
-          - name: bill_payer_account_id
-            description: '{{ doc("bill_payer_account_id") }}'
-          - name: identity_line_item_id
-            description: '{{ doc("identity_line_item_id") }}'
-          - name: identity_time_interval
-            description: '{{ doc("identity_time_interval") }}'
-          - name: line_item_availability_zone
-            description: '{{ doc("line_item_availability_zone") }}'
-          - name: line_item_blended_cost
-            description: '{{ doc("line_item_blended_cost") }}'
-          - name: line_item_blended_rate
-            description: '{{ doc("line_item_blended_rate") }}'
-          - name: line_item_currency_code
-            description: '{{ doc("line_item_currency_code") }}'
-          - name: line_item_legal_entity
-            description: '{{ doc("line_item_legal_entity") }}'
-          - name: line_item_line_item_description
-            description: '{{ doc("line_item_line_item_description") }}'
-          - name: line_item_line_item_type
-            description: '{{ doc("line_item_line_item_type") }}'
-          - name: line_item_normalization_factor
-            description: '{{ doc("line_item_normalization_factor") }}'
-          - name: line_item_normalized_usage_amount
-            description: '{{ doc("line_item_normalized_usage_amount") }}'
-          - name: line_item_operation
-            description: '{{ doc("line_item_operation") }}'
-          - name: line_item_product_code
-            description: '{{ doc("line_item_product_code") }}'
-          - name: line_item_resource_id
-            description: '{{ doc("line_item_resource_id") }}'
-          - name: line_item_tax_type
-            description: '{{ doc("line_item_tax_type") }}'
-          - name: line_item_unblended_cost
-            description: '{{ doc("line_item_unblended_cost") }}'
-          - name: line_item_unblended_rate
-            description: '{{ doc("line_item_unblended_rate") }}'
-          - name: line_item_usage_account_id
-            description: '{{ doc("line_item_usage_account_id") }}'
-          - name: line_item_usage_amount
-            description: '{{ doc("line_item_usage_amount") }}'
-          - name: line_item_usage_end_date
-            description: '{{ doc("line_item_usage_end_date") }}'
-          - name: line_item_usage_start_date
-            description: '{{ doc("line_item_usage_start_date") }}'
-          - name: line_item_usage_type
-            description: '{{ doc("line_item_usage_type") }}'
-          - name: pricing_currency
-            description: '{{ doc("pricing_currency") }}'
-          - name: pricing_lease_contract_length
-            description: '{{ doc("pricing_lease_contract_length") }}'
-          - name: pricing_offering_class
-            description: '{{ doc("pricing_offering_class") }}'
-          - name: pricing_public_on_demand_cost
-            description: '{{ doc("pricing_public_on_demand_cost") }}'
-          - name: pricing_public_on_demand_rate
-            description: '{{ doc("pricing_public_on_demand_rate") }}'
-          - name: pricing_purchase_option
-            description: '{{ doc("pricing_purchase_option") }}'
-          - name: pricing_rate_code
-            description: '{{ doc("pricing_rate_code") }}'
-          - name: pricing_rate_id
-            description: '{{ doc("pricing_rate_id") }}'
-          - name: pricing_term
-            description: '{{ doc("pricing_term") }}'
-          - name: pricing_unit
-            description: '{{ doc("pricing_unit") }}'
-          - name: product_fee_code
-            description: '{{ doc("product_fee_code") }}'
-          - name: product_fee_description
-            description: '{{ doc("product_fee_description") }}'
-          - name: product_from_location
-            description: '{{ doc("product_from_location") }}'
-          - name: product_from_location_type
-            description: '{{ doc("product_from_location_type") }}'
-          - name: product_from_region_code
-            description: '{{ doc("product_from_region_code") }}'
-          - name: product_instance_family
-            description: '{{ doc("product_instance_family") }}'
-          - name: product_instance_type
-            description: '{{ doc("product_instance_type") }}'
-          - name: product_location
-            description: '{{ doc("product_location") }}'
-          - name: product_location_type
-            description: '{{ doc("product_location_type") }}'
-          - name: product_operation
-            description: '{{ doc("product_operation") }}'
-          - name: product_pricing_unit
-            description: '{{ doc("product_pricing_unit") }}'
-          - name: product_product_family
-            description: '{{ doc("product_product_family") }}'
-          - name: product_product_name
-            description: '{{ doc("product_product_name") }}'
-          - name: product_region_code
-            description: '{{ doc("product_region_code") }}'
-          - name: product_servicecode
-            description: '{{ doc("product_servicecode") }}'
-          - name: product_sku
-            description: '{{ doc("product_sku") }}'
-          - name: product_to_location
-            description: '{{ doc("product_to_location") }}'
-          - name: product_to_location_type
-            description: '{{ doc("product_to_location_type") }}'
-          - name: product_to_region_code
-            description: '{{ doc("product_to_region_code") }}'
-          - name: product_usagetype
-            description: '{{ doc("product_usagetype") }}'
-          - name: reservation_amortized_upfront_fee_for_billing_period
-            description: '{{ doc("reservation_amortized_upfront_fee_for_billing_period") }}'
-          - name: reservation_end_time
-            description: '{{ doc("reservation_end_time") }}'
-          - name: reservation_modification_status
-            description: '{{ doc("reservation_modification_status") }}'
-          - name: reservation_normalized_units_per_reservation
-            description: '{{ doc("reservation_normalized_units_per_reservation") }}'
-          - name: reservation_number_of_reservations
-            description: '{{ doc("reservation_number_of_reservations") }}'
-          - name: reservation_reservation_arn
-            description: '{{ doc("reservation_reservation_arn") }}'
-          - name: reservation_start_time
-            description: '{{ doc("reservation_start_time") }}'
-          - name: reservation_subscription_id
-            description: '{{ doc("reservation_subscription_id") }}'
-          - name: reservation_total_reserved_normalized_units
-            description: '{{ doc("reservation_total_reserved_normalized_units") }}'
-          - name: reservation_total_reserved_units
-            description: '{{ doc("reservation_total_reserved_units") }}'
-          - name: reservation_units_per_reservation
-            description: '{{ doc("reservation_units_per_reservation") }}'
-          - name: reservation_unused_amortized_upfront_fee_for_billing_period
-            description: '{{ doc("reservation_unused_amortized_upfront_fee_for_billing_period") }}'
-          - name: reservation_unused_normalized_unit_quantity
-            description: '{{ doc("reservation_unused_normalized_unit_quantity") }}'
-          - name: reservation_unused_quantity
-            description: '{{ doc("reservation_unused_quantity") }}'
-          - name: reservation_unused_recurring_fee
-            description: '{{ doc("reservation_unused_recurring_fee") }}'
-          - name: reservation_upfront_value
-            description: '{{ doc("reservation_upfront_value") }}'
-          - name: savings_plan_end_time
-            description: '{{ doc("savings_plan_end_time") }}'
-          - name: savings_plan_offering_type
-            description: '{{ doc("savings_plan_offering_type") }}'
-          - name: savings_plan_payment_option
-            description: '{{ doc("savings_plan_payment_option") }}'
-          - name: savings_plan_purchase_term
-            description: '{{ doc("savings_plan_purchase_term") }}'
-          - name: savings_plan_region
-            description: '{{ doc("savings_plan_region") }}'
-          - name: savings_plan_savings_plan_arn
-            description: '{{ doc("savings_plan_savings_plan_arn") }}'
-          - name: savings_plan_savings_plan_effective_cost
-            description: '{{ doc("savings_plan_savings_plan_effective_cost") }}'
-          - name: savings_plan_savings_plan_rate
-            description: '{{ doc("savings_plan_savings_plan_rate") }}'
-          - name: savings_plan_start_time
-            description: '{{ doc("savings_plan_start_time") }}'
-          - name: bill_payer_account_name
-            description: '{{ doc("bill_payer_account_name") }}'
-          - name: product
-            description: '{{ doc("product") }}'
-          - name: discount
-            description: '{{ doc("discount") }}'
-          - name: resource_tags
-            description: '{{ doc("resource_tags") }}'
-          - name: cost_category
-            description: '{{ doc("cost_category") }}'
-          - name: line_item_usage_account_name
-            description: '{{ doc("line_item_usage_account_name") }}'
-          - name: reservation_reservation_a_r_n
-            description: '{{ doc("reservation_reservation_a_r_n") }}'
-          - name: reservation_recurring_fee_for_usage
-            description: '{{ doc("reservation_recurring_fee_for_usage") }}'
-          - name: savings_plan_recurring_commitment_for_billing_period
-            description: '{{ doc("savings_plan_recurring_commitment_for_billing_period") }}'
-          - name: savings_plan_used_commitment
-            description: '{{ doc("savings_plan_used_commitment") }}'
-          - name: reservation_amortized_upfront_cost_for_usage
-            description: '{{ doc("reservation_amortized_upfront_cost_for_usage") }}'
-          - name: reservation_effective_cost
-            description: '{{ doc("reservation_effective_cost") }}'
-          - name: savings_plan_amortized_upfront_commitment_for_billing_period
-            description: '{{ doc("savings_plan_amortized_upfront_commitment_for_billing_period") }}'
-          - name: savings_plan_total_commitment_to_date
-            description: '{{ doc("savings_plan_total_commitment_to_date") }}'
-```
-
-</details>
-
-3. Set the `has_defined_sources` variable (scoped to the `aws_cloud_cost` package) to `True`, like such:
-
-```yml
-# dbt_project.yml
 vars:
   aws_cloud_cost:
-    has_defined_sources: true
+    aws_cloud_cost_sources:
+      - database: connection_1_destination_name # Required
+        schema: connection_1_schema_name # Required
+        name: connection_1_source_name # Required only if following the step in the following subsection
+
+      - database: connection_2_destination_name
+        schema: connection_2_schema_name
+        name: connection_2_source_name
 ```
+
+#### Optional: Incorporate unioned sources into DAG
+
+If you use [Fivetran Transformations for dbt Core™](https://fivetran.com/docs/transformations/dbt#transformationsfordbtcore) and are unioning multiple AWS Cloud Cost connections, you can define your sources in a property `.yml` file, [using this as a template](https://github.com/fivetran/dbt_aws_cloud_cost/blob/main/models/staging/src_aws_cloud_cost.yml). Set the variable `has_defined_sources: true` under the AWS Cloud Cost namespace in your `dbt_project.yml`. Otherwise, your AWS Cloud Cost connections won't appear in your DAG. See the `union_connections` macro [documentation](https://github.com/fivetran/dbt_fivetran_utils/tree/releases/v0.4.latest#optional-union-connections-defined-sources-configuration) for full configuration details.
 
 ### (Optional) Additional configurations
 
@@ -427,7 +160,6 @@ models:
     staging:
         +schema: my_new_schema_name # leave blank for just the target_schema
 ```
-</details>
 
 ### (Optional) Orchestrate your models with Fivetran Transformations for dbt Core™
 <details><summary>Expand for details</summary>

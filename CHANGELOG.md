@@ -1,3 +1,11 @@
+# dbt_aws_cloud_cost v0.4.0
+
+[PR #19](https://github.com/fivetran/dbt_aws_cloud_cost/pull/19) includes the following updates:
+
+## Under the Hood
+- Migrates the `union_connections`, `apply_source_relation`, and `partition_by_source_relation` macros to the `dbt_fivetran_utils` package.
+- Adds the `fivetran_using_source_casing` variable for case-sensitive destination support. When enabled, downstream transformations respect source casing to ensure consistent results. See the [Additional Configurations](https://github.com/fivetran/dbt_aws_cloud_cost/#source-casing-for-case-sensitive-destinations) section of the README for details.
+
 # dbt_aws_cloud_cost v0.3.2
 
 [PR #14](https://github.com/fivetran/dbt_aws_cloud_cost/pull/14) includes the following updates:

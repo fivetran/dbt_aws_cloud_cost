@@ -41,7 +41,7 @@ usage_account_names as (
             usage_account_id,
             usage_account_name,
             source_relation,
-            row_number() over (partition by usage_account_id {{ ", source_relation" if var('aws_cloud_cost_sources', []) | length > 1 }} order by latest_start_date desc) = 1 as is_latest_name
+            row_number() over (partition by usage_account_id {{ fivetran_utils.partition_by_source_relation(package_name='aws_cloud_cost') }} order by latest_start_date desc) = 1 as is_latest_name
         from usage_account_mapping
     ) as sub where is_latest_name
 ),
@@ -73,7 +73,7 @@ billing_account_names as (
             bill_payer_account_id,
             bill_payer_account_name,
             source_relation,
-            row_number() over (partition by bill_payer_account_id {{ ", source_relation" if var('aws_cloud_cost_sources', []) | length > 1 }} order by latest_start_date desc) = 1 as is_latest_name
+            row_number() over (partition by bill_payer_account_id {{ fivetran_utils.partition_by_source_relation(package_name='aws_cloud_cost') }} order by latest_start_date desc) = 1 as is_latest_name
         from billing_account_mapping
     ) as sub where is_latest_name
 ),
