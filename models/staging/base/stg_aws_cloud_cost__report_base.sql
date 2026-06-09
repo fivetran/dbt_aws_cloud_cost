@@ -1,6 +1,6 @@
 {{
     fivetran_utils.union_connections(
-        connection_dictionary=var('aws_cloud_cost_sources'),
+        connection_dictionary='aws_cloud_cost_sources',
         single_source_name='aws_cloud_cost',
         single_table_name='report'
     )
