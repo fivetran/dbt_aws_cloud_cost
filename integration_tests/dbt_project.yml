@@ -29,7 +29,7 @@ seeds:
   +docs:
     show: False
   aws_cloud_cost_integration_tests:
-    +quote_columns: "{{ true if target.type in ('redshift', 'postgres') or var('fivetran_using_source_casing', false) }}"
+    +quote_columns: "{{ target.type in ('redshift', 'postgres') or var('fivetran_using_source_casing', false) }}"
     aws_cost_report:
       +column_types:
         line_item_usage_start_date: timestamp
