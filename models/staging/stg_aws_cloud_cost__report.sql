@@ -1,3 +1,4 @@
+
 with base as (
 
     select * 
@@ -14,8 +15,13 @@ fields as (
             )
         }}
         
-        {{ fivetran_utils.apply_source_relation('aws_cloud_cost') }}
-        
+        {{ aws_cloud_cost.aws_cloud_cost_source_relation(
+                connection_dictionary=var('aws_cloud_cost_sources', []),
+                single_schema=var('aws_cloud_cost_schema', 'aws_cloud_cost'),
+                single_database=var('aws_cloud_cost_database', target.database),
+                single_table_identifier=var("aws_cloud_cost_report_identifier", "aws_cost_report")
+            ) 
+        }}
     from base
 ),
 
@@ -27,7 +33,7 @@ final as (
         {{ aws_cloud_cost_trim( dbt.concat([ dbt.split_part('_file', "'/'", 1), "'/'", dbt.split_part('_file', "'/'", 2) ]) ) }} as report,
         _line,
         _modified,
-        max(_modified) over (partition by bill_billing_period_start_date {{ fivetran_utils.partition_by_source_relation(package_name='aws_cloud_cost') }}) = _modified as is_latest_file_version,
+        max(_modified) over (partition by bill_billing_period_start_date {{ ", source_relation" if var('aws_cloud_cost_sources', []) | length > 1 }}) = _modified as is_latest_file_version,
         bill_bill_type as bill_type,
         bill_billing_entity as billing_entity,
         bill_billing_period_start_date as billing_period_start_date,
