@@ -1,3 +1,11 @@
+# dbt_aws_cloud_cost v0.4.1
+
+[PR #20](https://github.com/fivetran/dbt_aws_cloud_cost/pull/20) includes the following updates:
+
+## Feature Updates
+- Adds DuckDB as a supported destination.
+
+
 # dbt_aws_cloud_cost v0.4.0
 
 [PR #19](https://github.com/fivetran/dbt_aws_cloud_cost/pull/19) includes the following updates:
